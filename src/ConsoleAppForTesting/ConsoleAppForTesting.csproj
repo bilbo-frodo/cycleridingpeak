@@ -49,7 +49,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\src\ClassLibrary1\Strava.NET.csproj">
+    <ProjectReference Include="..\ClassLibrary1\Strava.NET.csproj">
       <Project>{31e167b4-bf33-4f10-a129-3b5ff22dcbfd}</Project>
       <Name>Strava.NET</Name>
     </ProjectReference>
