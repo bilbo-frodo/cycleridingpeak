@@ -65,18 +65,23 @@ public partial class StravaHome : System.Web.UI.Page
             GetTokenFromApi(Code);
         }
 
+        // viewstate is turned off, so grab values from Session
         if (Session["Token"] != null)
         {
             Token = Session["Token"].ToString();
         }
+        if (Session["TokenExpires"] != null)
+        {
+            uiLtlStatus.Text = Session["TokenExpires"].ToString();
+        }
     }
 
-    /// <summary>
-    /// now done via StravaApiHandler.ashx
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    protected void GetAthleteDetailsClick(object sender, EventArgs e)
+        /// <summary>
+        /// now done via StravaApiHandler.ashx
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void GetAthleteDetailsClick(object sender, EventArgs e)
     {
         try
         {
@@ -554,9 +559,7 @@ public partial class StravaHome : System.Web.UI.Page
             TokenType = token.TokenType;
             RefreshToken = token.RefreshToken;
             ExpiresAt = token.ExpiresAt;
-            ExpiresIn = token.ExpiresIn;
-
-            Session["Token"] = Token;
+            ExpiresIn = token.ExpiresIn;            
 
             var seconds = int.Parse(ExpiresIn);
             var expiresIn = string.Format("{0:00} hrs {1:00} mins {2:00} secs", seconds / 3600, (seconds / 60) % 60, seconds % 60);
@@ -564,6 +567,9 @@ public partial class StravaHome : System.Web.UI.Page
             if (DEBUG) Response.Write($"expires in {expiresIn}<br />");
             if (DEBUG) Response.Write($"token expires at {expiresAt}<br /><br />");
             uiLtlStatus.Text = $"token expires at {expiresAt}";
+
+            Session["Token"] = Token;
+            Session["TokenExpires"] = uiLtlStatus.Text;
         }
         catch (Exception ex)
         {
