@@ -229,7 +229,7 @@ public partial class StravaHome : System.Web.UI.Page
         }
         else if (uiRbSpinning.Checked)
         {
-            uiLtlOutput.Text += (string.Format(@"<tr><th>date</th><th class='w-108'>time<br />(hrs:mins)</th><th class='w-108'>avge HR</th><th class='w-64'>max HR</th></tr>"));
+            uiLtlOutput.Text += (string.Format(@"<tr><th>date</th><th class='w-64'>calories</th><th class='w-108'>time<br />(hrs:mins)</th><th class='w-108'>avge HR</th><th class='w-64'>max HR</th></tr>"));
         }
         else if (uiRbParkrun.Checked)
         {
@@ -299,15 +299,17 @@ public partial class StravaHome : System.Web.UI.Page
                     var description = activityDetails.Description != null && activityDetails.Description.Trim().Length > 0 ?
                         activityDetails.Description :
                         string.Empty;
+                    var calories = activityDetails.Calories;
 
-                    uiLtlOutput.Text += string.Format(@"<tr><td>{0:ddd dd MMM} {6}</td><td class='alignright'>{1:hh\:mm}</td><td class='alignright {4}'>{2:0}</td><td class='alignright {5}'>{3:0}</td></tr>", 
+                    uiLtlOutput.Text += string.Format(@"<tr><td>{0:ddd dd MMM} {6}</td><td class='alignright'>{7}</td><td class='alignright'>{1:hh\:mm}</td><td class='alignright {4}'>{2:0}</td><td class='alignright {5}'>{3:0}</td></tr>", 
                         activity.StartDateLocal, 
                         time, 
                         activity.AvgeHeartRate, 
                         activity.MaxHeartRate,
                         highestAvgeHeartRateClass,
                         highestMaxHeartRateClass,
-                        description
+                        description,
+                        calories
                         );
                 }
                 else if ((uiRbParkrun.Checked) && (activity.Type.ToLower()=="walk"))
