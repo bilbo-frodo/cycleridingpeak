@@ -45,7 +45,9 @@ public partial class StravaHome : System.Web.UI.Page
         // set default values for the textboxes
         if (!IsPostBack)
         {
-            uiTxtStartDate.Text = DateTime.Today.AddMonths(-6).ToString("dd/MM/yyyy");
+            var month = DateTime.Today.Month != 1 ? DateTime.Today.Month - 1 : 12;  //if today is in Jan then last month is Dec
+            var year = month != 12 ? DateTime.Today.Year : DateTime.Today.Year - 1;
+            uiTxtStartDate.Text = string.Format("01/{0:00}/{1}", month, year);
             uiTxtEndDate.Text = DateTime.Today.ToString("dd/MM/yyyy");
         }
 
