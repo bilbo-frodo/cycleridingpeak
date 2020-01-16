@@ -23,6 +23,13 @@
         .w-64 {width:64px; text-align:right;}
         .form-rounded {border-radius:4px; border-width:0px; padding: 2px;}
         .error {color:red;}
+        .ui-datepicker table {
+            width: 100%;
+            font-size: .7em;
+            border-collapse: collapse;
+            font-family:verdana;
+            margin: 0 0 .4em;
+        }
     </style>
 </head>
 <body>
