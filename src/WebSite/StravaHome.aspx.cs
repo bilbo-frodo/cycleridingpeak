@@ -136,6 +136,7 @@ public partial class StravaHome : System.Web.UI.Page
             }  else
             {
                 // need some error handling for invalid dates
+                Response.Write("<span class='error'>Invalid date format - must be dd/MM/yyyy</span>");
             }
 
             ErrorLoopCount = 0;

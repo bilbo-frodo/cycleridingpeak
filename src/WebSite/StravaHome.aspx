@@ -6,7 +6,9 @@
 <head runat="server">
     <title>strava.net</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">    
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 
     <style>
@@ -20,6 +22,7 @@
         .w-72 {width:72px; text-align:right;}
         .w-64 {width:64px; text-align:right;}
         .form-rounded {border-radius:4px; border-width:0px; padding: 2px;}
+        .error {color:red;}
     </style>
 </head>
 <body>
@@ -83,8 +86,18 @@
         var strava = strava || {};
 
         $(function () {
+            strava.init();
             strava.hookupGetAthlete.init();
         });
+
+        strava.init = function () {
+            $("#uiTxtStartDate").datepicker({
+                dateFormat: "dd/mm/yy"
+            });
+            $("#uiTxtEndDate").datepicker({
+                dateFormat: "dd/mm/yy"
+            });
+        };
 
         strava.hookupGetAthlete = function () {
             'use strict';
