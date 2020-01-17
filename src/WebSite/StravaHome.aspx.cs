@@ -238,7 +238,7 @@ public partial class StravaHome : System.Web.UI.Page
         }
         else if (uiRbSpinning.Checked)
         {
-            uiLtlOutput.Text += (string.Format(@"<tr><th>date</th><th class='w-64'>calories</th><th class='w-108'>time<br />(hrs:mins)</th><th class='w-108'>avge HR</th><th class='w-64'>max HR</th></tr>"));
+            uiLtlOutput.Text += (string.Format(@"<tr><th>date</th><th class='w-64'>calories</th><th class='w-108'>time<br />(hrs:mins)</th><th class='w-108'>avge HR</th><th class='w-64'>max HR</th><th class='w-84'>rides this month</th></tr>"));
         }
         else if (uiRbParkrun.Checked)
         {
@@ -312,7 +312,7 @@ public partial class StravaHome : System.Web.UI.Page
                         string.Empty;
                     var calories = activityDetails.Calories;
 
-                    uiLtlOutput.Text += string.Format(@"<tr><td>{0:ddd dd MMM} {6}</td><td class='alignright'>{7}</td><td class='alignright'>{1:hh\:mm}</td><td class='alignright {4}'>{2:0}</td><td class='alignright {5}'>{3:0}</td></tr>",
+                    uiLtlOutput.Text += string.Format(@"<tr><td>{0:ddd dd MMM} {6}</td><td class='alignright'>{7}</td><td class='alignright'>{1:hh\:mm}</td><td class='alignright {4}'>{2:0}</td><td class='alignright {5}'>{3:0}</td><td class='alignright'>{8:0}</td></tr>",
                         activity.StartDateLocal,
                         time,
                         activity.AvgeHeartRate,
@@ -320,7 +320,8 @@ public partial class StravaHome : System.Web.UI.Page
                         highestAvgeHeartRateClass,
                         highestMaxHeartRateClass,
                         description,
-                        calories
+                        calories,
+                        activity.ActivitiesThisMonth != 0 ? activity.ActivitiesThisMonth.ToString() : string.Empty
                         );
                 }
                 else if ((uiRbParkrun.Checked) && (activity.Type.ToLower() == "walk"))
@@ -512,8 +513,10 @@ public partial class StravaHome : System.Web.UI.Page
 
             foreach (var sortedEntry in sortByDate)
             {
-                // only interested in cycle rides for now
-                if ((uiRbCycling.Checked) && (sortedEntry.Distance > 0) && (sortedEntry.Type.ToLower() == "ride"))  // if distance > 0 it's road cycling 
+                // only interested in cycle rides and spinning for now
+                if (((uiRbCycling.Checked) && (sortedEntry.Distance > 0) && (sortedEntry.Type.ToLower() == "ride"))  // if distance > 0 it's road cycling 
+                    ||
+                    (uiRbSpinning.Checked) && (sortedEntry.Distance == 0))
                 {
                     if (sortedEntry.StartDateLocal.HasValue)
                     {
