@@ -231,6 +231,7 @@ public partial class StravaHome : System.Web.UI.Page
         // render table header
         uiLtlOutput.Text += "<p>";
         uiLtlOutput.Text += (string.Format(@"<table class='table table-striped' style='width:1200px !important'>"));
+        uiLtlOutput.Text += "<thead>";
         if (uiRbCycling.Checked)
         {
             uiLtlOutput.Text += (string.Format(@"<tr><th class='w-108'>date</th><th></th><th class='w-84'>distance<br />km (miles)</th><th class='w-64''>time<br />(hrs:mins)</th><th class='w-84'>elevation gain</th><th class='w-72'>calories</th><th class='w-84'>avge watts</th><th class='w-96'>avge speed<br />km (miles) / hr</th><th class='w-84'>rides this month</th><th class='w-84'>distance this month</th></tr>"));
@@ -243,6 +244,8 @@ public partial class StravaHome : System.Web.UI.Page
         {
             uiLtlOutput.Text += (string.Format(@"<tr><th class='w-72'>date</th><th class='w-108'>avge HR</th><th class='w-64'>max HR</th><th class='w-72'>time (mins)</th></tr>"));
         }
+        uiLtlOutput.Text += "</thead>";
+
 
         // render details
         foreach (SummaryActivity activity in result)
