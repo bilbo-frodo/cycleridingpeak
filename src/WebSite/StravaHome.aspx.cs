@@ -260,13 +260,13 @@ public partial class StravaHome : System.Web.UI.Page
                     var avgeSpeedInKmPerHr = activity.AverageSpeed * speedConversion;
                     var avgeSpeedInMilesPerHr = avgeSpeedInKmPerHr * 0.6;
                     var highestSpeedBackgroundClass = activity.AverageSpeedPosition > 0 ? "highlighted" : "";
-                    var longestDistanceClass = activity.LongestDistancePosition > 0 ? "highlighted" : string.Empty;                    
+                    var longestDistanceClass = activity.LongestDistancePosition > 0 ? "highlighted" : string.Empty;
                     var time = TimeSpan.FromSeconds((double)activity.MovingTime);
 
-                    var activityDetails = GetActivityDetails(activity);  
+                    var activityDetails = GetActivityDetails(activity);
 
                     // if there's a description plant a link to it
-                    var description = activityDetails.Description!=null &&  activityDetails.Description.Trim().Length > 0 ?
+                    var description = activityDetails.Description != null && activityDetails.Description.Trim().Length > 0 ?
                         activity.Name + "&nbsp;<a href='#demo" + noRides + "' data-toggle='collapse'>+</a>" + "<div id='demo" + noRides + "' class='collapse'>" + activityDetails.Description + "</div>" :
                         activity.Name;
                     var calories = activityDetails.Calories;
@@ -275,7 +275,7 @@ public partial class StravaHome : System.Web.UI.Page
                         string.Empty,
                         activity.StartDateLocal,
                         description,
-                        activity.Distance / 1000 * 0.6213712,                        
+                        activity.Distance / 1000 * 0.6213712,
                         time,
                         activity.TotalElevationGain,
                         activity.AverageWatts,
@@ -285,7 +285,7 @@ public partial class StravaHome : System.Web.UI.Page
                         activity.ActivitiesThisMonth != 0 ? activity.ActivitiesThisMonth.ToString() : string.Empty,
                         activity.TotalDistanceThisMonth / 1000,
                         activity.Distance / 1000,
-                        activity.ActivitiesThisMonth != 0 ? string.Format("({0:0})", activity.TotalDistanceThisMonth / 1000 * 0.6213712):string.Empty,
+                        activity.ActivitiesThisMonth != 0 ? string.Format("({0:0})", activity.TotalDistanceThisMonth / 1000 * 0.6213712) : string.Empty,
                         longestDistanceClass,
                         calories
                         ));
@@ -309,10 +309,10 @@ public partial class StravaHome : System.Web.UI.Page
                         string.Empty;
                     var calories = activityDetails.Calories;
 
-                    uiLtlOutput.Text += string.Format(@"<tr><td>{0:ddd dd MMM} {6}</td><td class='alignright'>{7}</td><td class='alignright'>{1:hh\:mm}</td><td class='alignright {4}'>{2:0}</td><td class='alignright {5}'>{3:0}</td></tr>", 
-                        activity.StartDateLocal, 
-                        time, 
-                        activity.AvgeHeartRate, 
+                    uiLtlOutput.Text += string.Format(@"<tr><td>{0:ddd dd MMM} {6}</td><td class='alignright'>{7}</td><td class='alignright'>{1:hh\:mm}</td><td class='alignright {4}'>{2:0}</td><td class='alignright {5}'>{3:0}</td></tr>",
+                        activity.StartDateLocal,
+                        time,
+                        activity.AvgeHeartRate,
                         activity.MaxHeartRate,
                         highestAvgeHeartRateClass,
                         highestMaxHeartRateClass,
@@ -320,8 +320,8 @@ public partial class StravaHome : System.Web.UI.Page
                         calories
                         );
                 }
-                else if ((uiRbParkrun.Checked) && (activity.Type.ToLower()=="walk"))
-                { 
+                else if ((uiRbParkrun.Checked) && (activity.Type.ToLower() == "walk"))
+                {
                     noRides += 1;
 
                     TimeSpan time = TimeSpan.FromSeconds((double)activity.MovingTime);
@@ -331,24 +331,26 @@ public partial class StravaHome : System.Web.UI.Page
             }
         }
 
-        // render footers
 
+        // render footers
         uiLtlOutput.Text += (string.Format(@"<tfoot>"));
         uiLtlOutput.Text += (string.Format(@"<tr><td></td><td></td><td class='alignright'>------</td><td class='alignright'>------</td></tr>"));
         uiLtlOutput.Text += (string.Format(@"<tr><td></td><td>No rides {0}</td><td class='alignright'>{1:0}</td><td class='alignright'>{2:0.0}</td></tr>", noRides, totalDistance / 1000 * 0.6213712, FormatTimeInUnixTimestampToHrsMins(totalTime)));
         uiLtlOutput.Text += (string.Format(@"</tfoot>"));
+
         uiLtlOutput.Text += (string.Format(@"</table>"));
         uiLtlOutput.Text += "</p>";
 
         var tsTimeCycled = TimeSpan.FromSeconds((double)totalTimeCycled);
         var hoursCycled = tsTimeCycled.Days * 24 + tsTimeCycled.Hours;
 
-
-        uiLtlSummary.Text = "<p>";
-        uiLtlSummary.Text += (string.Format(@"Total distance on bike since {0:dd/MM/yyyy} is {1:0} km or {2:0} miles<br />", fromDate, totalDistance / 1000, totalDistance / 1000 * 0.6213712));
-        uiLtlSummary.Text += (string.Format(@"Total time on bike (including spinning) was {0}:{1:00} hrs:mins<br />", hoursCycled, tsTimeCycled.Minutes));
-        uiLtlSummary.Text += "</p>";
-        
+        if (uiRbCycling.Checked)
+        {
+            uiLtlSummary.Text = "<p>";
+            uiLtlSummary.Text += (string.Format(@"Total distance on bike since {0:dd/MM/yyyy} is {1:0} km or {2:0} miles<br />", fromDate, totalDistance / 1000, totalDistance / 1000 * 0.6213712));
+            uiLtlSummary.Text += (string.Format(@"Total time on bike (including spinning) was {0}:{1:00} hrs:mins<br />", hoursCycled, tsTimeCycled.Minutes));
+            uiLtlSummary.Text += "</p>";
+        }
     }
 
     private void CalculateTopAverageSpeeds(System.Collections.Generic.List<SummaryActivity> result)
