@@ -334,8 +334,15 @@ public partial class StravaHome : System.Web.UI.Page
 
         // render footers
         uiLtlOutput.Text += (string.Format(@"<tfoot>"));
-        uiLtlOutput.Text += (string.Format(@"<tr><td></td><td></td><td class='alignright'>------</td><td class='alignright'>------</td></tr>"));
-        uiLtlOutput.Text += (string.Format(@"<tr><td></td><td>No rides {0}</td><td class='alignright'>{1:0}</td><td class='alignright'>{2:0.0}</td></tr>", noRides, totalDistance / 1000 * 0.6213712, FormatTimeInUnixTimestampToHrsMins(totalTime)));
+        if (uiRbCycling.Checked)
+        {
+            uiLtlOutput.Text += (string.Format(@"<tr><td></td><td></td><td class='alignright'>------</td><td class='alignright'>------</td></tr>"));
+            uiLtlOutput.Text += (string.Format(@"<tr><td></td><td>No rides {0}</td><td class='alignright'>{1:0}</td><td class='alignright'>{2:0.0}</td></tr>", noRides, totalDistance / 1000 * 0.6213712, FormatTimeInUnixTimestampToHrsMins(totalTime)));
+        } else
+        {
+            uiLtlOutput.Text += (string.Format(@"<tr><td></td><td></td><td class='alignright'>------</td><td></td></tr>"));
+            uiLtlOutput.Text += (string.Format(@"<tr><td>No rides {0}</td><td></td><td class='alignright'>{1}</td><td></td></tr>", noRides, FormatTimeInUnixTimestampToHrsMins(totalTimeCycled)));
+        }
         uiLtlOutput.Text += (string.Format(@"</tfoot>"));
 
         uiLtlOutput.Text += (string.Format(@"</table>"));
