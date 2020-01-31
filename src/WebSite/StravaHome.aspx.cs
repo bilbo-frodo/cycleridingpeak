@@ -268,11 +268,12 @@ public partial class StravaHome : System.Web.UI.Page
 
                     var activityDetails = GetActivityDetails(activity);
 
+                    var linkToActivity = string.Format("<a class='linkBlack' href='https://www.strava.com/activities/{0}' target='_blank'>{1}</a>", activityDetails.Id, activity.Name);
                     // if there's a description plant a link to it
                     var description = activityDetails.Description != null && activityDetails.Description.Trim().Length > 0 ?
-                        activity.Name + "&nbsp;<a href='#demo" + noRides + "' data-toggle='collapse'>+</a>" + "<div id='demo" + noRides + "' class='collapse'>" + activityDetails.Description + "</div>" :
-                        activity.Name;
-                    var calories = activityDetails.Calories;
+                        linkToActivity + "&nbsp;<a href='#demo" + noRides + "' data-toggle='collapse'>+</a>" + "<div id='demo" + noRides + "' class='collapse'>" + activityDetails.Description + "</div>" :
+                        linkToActivity;
+                    var calories = activityDetails.Calories;                    
 
                     uiLtlOutput.Text += (string.Format(@"<tr {0}><td>{1:ddd dd MMM}</td><td>{2}</td><td class='alignright {14:0}'>{12:0} ({3:0})</td><td class='alignright'>{4:hh\:mm}</td><td class='alignright'>{5:0} m</td><td class='alignright'>{15:0}</td><td class='alignright'>{6:0}</td><td class='alignright {9}'>{7:0.0} ({8:0.0})</td><td class='alignright'>{10:0}</td><td class='alignright'>{11:0} {13:0}</td></tr>",
                         string.Empty,
