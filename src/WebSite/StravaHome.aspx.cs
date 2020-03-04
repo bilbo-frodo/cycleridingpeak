@@ -48,24 +48,17 @@ public partial class StravaHome : System.Web.UI.Page
             var month = DateTime.Today.Month != 1 ? DateTime.Today.Month - 1 : 12;  //if today is in Jan then last month is Dec
             var year = month != 12 ? DateTime.Today.Year : DateTime.Today.Year - 1;
 
-            if (Session["StartDate"] != null)
+            if (UserLoadedHomepage())
             {
-                uiTxtStartDate.Text = Session["StartDate"].ToString();
-            }
-            else // set the default value
-            {
+                // set the default values
                 uiTxtStartDate.Text = string.Format("01/{0:00}/{1}", month, year);
-            }
-
-            if (Session["EndDate"] != null)
-            {
-                uiTxtEndDate.Text = Session["EndDate"].ToString();
-            }
-            else // set the default value
-            {
                 uiTxtEndDate.Text = DateTime.Today.ToString("dd/MM/yyyy");
             }
-            
+            else  // we're returning from oAuth so check use any start/end date values in session
+            {
+                uiTxtStartDate.Text=Session["StartDate"] != null? Session["StartDate"].ToString(): uiTxtStartDate.Text = string.Format("01/{0:00}/{1}", month, year);
+                uiTxtEndDate.Text = Session["EndDate"] != null? Session["EndDate"].ToString(): DateTime.Today.ToString("dd/MM/yyyy");
+            }
         }
         else  // if it's a postback save the current values for start/end date - we could lose them if we need to oAuth authentice
         { 
@@ -100,12 +93,12 @@ public partial class StravaHome : System.Web.UI.Page
         }
     }
 
-        /// <summary>
-        /// now done via StravaApiHandler.ashx
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        protected void GetAthleteDetailsClick(object sender, EventArgs e)
+    /// <summary>
+    /// now done via StravaApiHandler.ashx
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected void GetAthleteDetailsClick(object sender, EventArgs e)
     {
         try
         {
@@ -632,6 +625,15 @@ public partial class StravaHome : System.Web.UI.Page
             }
         }
         return;
+    }
+
+    /// <summary>
+    /// if it's not a postback then either the user loaded the homepage or we could be redirected by oAuth after an authentication
+    /// </summary>
+    /// <returns></returns>
+    private bool UserLoadedHomepage()
+    {
+        return string.IsNullOrWhiteSpace(Request.QueryString["code"]) && !IsPostBack;
     }
 
     public static DateTime ConvertFromUnixTimestamp(double timestamp)
