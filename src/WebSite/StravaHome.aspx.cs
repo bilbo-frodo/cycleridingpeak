@@ -42,13 +42,35 @@ public partial class StravaHome : System.Web.UI.Page
     {
         CheckStateIsUnchanged();
 
-        // set default values for the textboxes
+        // if !postback then either user just loaded the homepage or else the redirect from the oAuth authentication server
         if (!IsPostBack)
         {
             var month = DateTime.Today.Month != 1 ? DateTime.Today.Month - 1 : 12;  //if today is in Jan then last month is Dec
             var year = month != 12 ? DateTime.Today.Year : DateTime.Today.Year - 1;
-            uiTxtStartDate.Text = string.Format("01/{0:00}/{1}", month, year);
-            uiTxtEndDate.Text = DateTime.Today.ToString("dd/MM/yyyy");
+
+            if (Session["StartDate"] != null)
+            {
+                uiTxtStartDate.Text = Session["StartDate"].ToString();
+            }
+            else // set the default value
+            {
+                uiTxtStartDate.Text = string.Format("01/{0:00}/{1}", month, year);
+            }
+
+            if (Session["EndDate"] != null)
+            {
+                uiTxtEndDate.Text = Session["EndDate"].ToString();
+            }
+            else // set the default value
+            {
+                uiTxtEndDate.Text = DateTime.Today.ToString("dd/MM/yyyy");
+            }
+            
+        }
+        else  // if it's a postback save the current values for start/end date - we could lose them if we need to oAuth authentice
+        { 
+            Session["StartDate"] = uiTxtStartDate.Text;
+            Session["EndDate"] = uiTxtEndDate.Text;
         }
 
         // if 'code' is in the querystring then this has been returned by the strava authorize endpoint
