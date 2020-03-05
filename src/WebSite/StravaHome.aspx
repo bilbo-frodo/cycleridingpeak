@@ -160,6 +160,24 @@
             };
         }();
 
+        function getNumberFromString(text) {
+            var regex = "/(^\d+\.\d{1,2}|\d+)(.+$)/i";
+            /*
+             * /
+             *    (           # start of optional group
+             *        ^\d+    # any no of digits
+             *        \.      # followed by a .
+             *        \d{1,2} # followed by 1 or 2 digits
+             *      |         # OR
+             *        \d+     # any no of digits
+             *    )
+             *    (.+$)  # followed by any number of chars
+             * 
+             * /i  #case insensitive
+             */
+            var rc = Number(text.replace(/(^\d+\.\d{1,2}|\d+)(.+$)/i, '$1'));
+            return rc;
+        }
 
         /*
          * from https://www.w3schools.com/howto/howto_js_sort_table.asp
@@ -185,13 +203,13 @@
                     //check if the two rows should switch place, based on the direction, asc or desc:
                     //the regex replace extracts the first number in the string e.g. returns '24' from '24(15)'                    
                     if (dir == "asc") {
-                        if (Number(x.innerHTML.toLowerCase().replace(/(^\d+)(.+$)/i, '$1')) > Number(y.innerHTML.toLowerCase().replace(/(^\d+)(.+$)/i, '$1'))) {
+                        if (getNumberFromString(x.innerHTML) > getNumberFromString(y.innerHTML)) {
                             //if so, mark as a switch and break the loop:
                             shouldSwitch = true;
                             break;
                         }
                     } else if (dir == "desc") {
-                        if (Number(x.innerHTML.toLowerCase().replace(/(^\d+)(.+$)/i, '$1')) < Number(y.innerHTML.toLowerCase().replace(/(^\d+)(.+$)/i, '$1'))) {
+                        if (getNumberFromString(x.innerHTML) < getNumberFromString(y.innerHTML)) {
                             //if so, mark as a switch and break the loop:
                             shouldSwitch = true;
                             break;
