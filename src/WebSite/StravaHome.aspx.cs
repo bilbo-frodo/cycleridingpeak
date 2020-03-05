@@ -245,11 +245,11 @@ public partial class StravaHome : System.Web.UI.Page
 
         // render table header
         uiLtlOutput.Text += "<p>";
-        uiLtlOutput.Text += (string.Format(@"<table class='table table-striped' style='width:1200px !important'>"));
+        uiLtlOutput.Text += (string.Format(@"<table id='resultsTable' class='table table-striped' style='width:1200px !important'>"));
         uiLtlOutput.Text += "<thead>";
         if (uiRbCycling.Checked)
         {
-            uiLtlOutput.Text += (string.Format(@"<tr><th class='w-108'>date</th><th></th><th class='w-84'>distance<br />km (miles)</th><th class='w-64''>time<br />(hrs:mins)</th><th class='w-84'>elevation gain</th><th class='w-72'>calories</th><th class='w-84'>avge watts</th><th class='w-96'>avge speed<br />km (miles) / hr</th><th class='w-84'>rides this month</th><th class='w-84'>distance this month</th></tr>"));
+            uiLtlOutput.Text += (string.Format(@"<tr><th class='w-108'>date</th><th></th><th class='w-84' onclick='sortTable(2)'>distance<br />km (miles)</th><th class='w-64' onclick='sortTable(3)'>time<br />(hrs:mins)</th><th class='w-84' onclick='sortTable(4)'>elevation gain</th><th class='w-72' onclick='sortTable(5)'>calories</th><th class='w-84' onclick='sortTable(6)'>avge watts</th><th class='w-96' onclick='sortTable(7)'>avge speed<br />km (miles) / hr</th><th class='w-84'>rides this month</th><th class='w-84'>distance this month</th></tr>"));
         }
         else if (uiRbSpinning.Checked)
         {
@@ -356,11 +356,9 @@ public partial class StravaHome : System.Web.UI.Page
         uiLtlOutput.Text += (string.Format(@"<tfoot>"));
         if (uiRbCycling.Checked)
         {
-            uiLtlOutput.Text += (string.Format(@"<tr><td></td><td></td><td class='alignright'>------</td><td class='alignright'>------</td></tr>"));
             uiLtlOutput.Text += (string.Format(@"<tr><td></td><td>No rides {0}</td><td class='alignright'>{1:0}</td><td class='alignright'>{2:0.0}</td></tr>", noRides, totalDistance / 1000 * 0.6213712, FormatTimeInUnixTimestampToHrsMins(totalTime)));
         } else
         {
-            uiLtlOutput.Text += (string.Format(@"<tr><td></td><td></td><td class='alignright'>------</td><td></td></tr>"));
             uiLtlOutput.Text += (string.Format(@"<tr><td>No rides {0}</td><td></td><td class='alignright'>{1}</td><td></td></tr>", noRides, FormatTimeInUnixTimestampToHrsMins(totalTimeCycled)));
         }
         uiLtlOutput.Text += (string.Format(@"</tfoot>"));
