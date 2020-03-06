@@ -92,10 +92,13 @@
 </body>
     <script>
         var strava = strava || {};
+        var tableSort = tableSort || {};
 
         $(function () {
             strava.init();
             strava.hookupGetAthlete.init();
+
+            tableSort.init();
         });
 
         strava.init = function () {
@@ -160,76 +163,93 @@
             };
         }();
 
-        function getNumberFromString(text) {
-            var regex = "/(^\d+\.\d{1,2}|\d+)(.+$)/i";
-            /*
-             * /
-             *    (           # start of optional group
-             *        ^\d+    # any no of digits
-             *        \.      # followed by a .
-             *        \d{1,2} # followed by 1 or 2 digits
-             *      |         # OR
-             *        \d+     # any no of digits
-             *    )
-             *    (.+$)  # followed by any number of chars
-             * 
-             * /i  #case insensitive
-             */
-            var rc = Number(text.replace(/(^\d+\.\d{1,2}|\d+)(.+$)/i, '$1'));
-            return rc;
-        }
+        tableSort = function () {
+            var
+                getNumberFromString = function (text) {
+                    var regex = "/(^\d+\.\d{1,2}|\d+)(.+$)/i";
+                    /*
+                     * /
+                     *    (           # start of optional group
+                     *        ^\d+    # any no of digits
+                     *        \.      # followed by a .
+                     *        \d{1,2} # followed by 1 or 2 digits
+                     *      |         # OR
+                     *        \d+     # any no of digits
+                     *    )
+                     *    (.+$)  # followed by any number of chars
+                     * 
+                     * /i  #case insensitive
+                     */
+                    var rc = Number(text.replace(/(^\d+\.\d{1,2}|\d+)(.+$)/i, '$1'));
+                    return rc;
+                },
 
-        /*
-         * from https://www.w3schools.com/howto/howto_js_sort_table.asp
-         */
-        function sortTable(n) {
-            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-            table = document.getElementById("resultsTable");
-            switching = true;
-            //Set the sorting direction to ascending:
-            dir = "asc";
-            //Make a loop that will continue until no switching has been done:
-            while (switching) {
-                //start by saying: no switching is done:
-                switching = false;
-                rows = table.rows;
-                //Loop through all table rows (except the first, which contains table headers, and the last/footer):
-                for (i = 1; i < (rows.length - 2); i++) {
-                    //start by saying there should be no switching:
-                    shouldSwitch = false;
-                    //get the two elements you want to compare, one from current row and one from the next:
-                    x = rows[i].getElementsByTagName("TD")[n];
-                    y = rows[i + 1].getElementsByTagName("TD")[n];
-                    //check if the two rows should switch place, based on the direction, asc or desc:
-                    //the regex replace extracts the first number in the string e.g. returns '24' from '24(15)'                    
-                    if (dir == "asc") {
-                        if (getNumberFromString(x.innerHTML) > getNumberFromString(y.innerHTML)) {
-                            //if so, mark as a switch and break the loop:
-                            shouldSwitch = true;
-                            break;
-                        }
-                    } else if (dir == "desc") {
-                        if (getNumberFromString(x.innerHTML) < getNumberFromString(y.innerHTML)) {
-                            //if so, mark as a switch and break the loop:
-                            shouldSwitch = true;
-                            break;
-                        }
-                    }
-                }
-                if (shouldSwitch) {
-                    //If a switch has been marked, make the switch and mark that a switch has been done:
-                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                /*
+                 * from https://www.w3schools.com/howto/howto_js_sort_table.asp
+                 */
+                sortTable = function (n) {
+                    var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+                    table = document.getElementById("resultsTable");
                     switching = true;
-                    //Each time a switch is done, increase this count by 1:
-                    switchcount++;
-                } else {
-                    //If no switching has been done AND the direction is "asc", set the direction to "desc" and run the while loop again.
-                    if (switchcount == 0 && dir == "asc") {
-                        dir = "desc";
-                        switching = true;
+                    //Set the sorting direction to ascending:
+                    dir = "asc";
+                    //Make a loop that will continue until no switching has been done:
+                    while (switching) {
+                        //start by saying: no switching is done:
+                        switching = false;
+                        rows = table.rows;
+                        //Loop through all table rows (except the first, which contains table headers, and the last/footer):
+                        for (i = 1; i < (rows.length - 2); i++) {
+                            //start by saying there should be no switching:
+                            shouldSwitch = false;
+                            //get the two elements you want to compare, one from current row and one from the next:
+                            x = rows[i].getElementsByTagName("TD")[n];
+                            y = rows[i + 1].getElementsByTagName("TD")[n];
+                            //check if the two rows should switch place, based on the direction, asc or desc:
+                            //the regex replace extracts the first number in the string e.g. returns '24' from '24(15)'                    
+                            if (dir == "asc") {
+                                if (getNumberFromString(x.innerHTML) > getNumberFromString(y.innerHTML)) {
+                                    //if so, mark as a switch and break the loop:
+                                    shouldSwitch = true;
+                                    break;
+                                }
+                            } else if (dir == "desc") {
+                                if (getNumberFromString(x.innerHTML) < getNumberFromString(y.innerHTML)) {
+                                    //if so, mark as a switch and break the loop:
+                                    shouldSwitch = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (shouldSwitch) {
+                            //If a switch has been marked, make the switch and mark that a switch has been done:
+                            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                            switching = true;
+                            //Each time a switch is done, increase this count by 1:
+                            switchcount++;
+                        } else {
+                            //If no switching has been done AND the direction is "asc", set the direction to "desc" and run the while loop again.
+                            if (switchcount == 0 && dir == "asc") {
+                                dir = "desc";
+                                switching = true;
+                            }
+                        }
                     }
-                }
-            }
-        }
+                },
+                init = function () {
+                    // wire up table column headers - clicking a table header sorts by that column
+                    $("#column2").click(function () { sortTable(2); });
+                    $("#column3").click(function () { sortTable(3); });
+                    $("#column4").click(function () { sortTable(4); });
+                    $("#column5").click(function () { sortTable(5); });
+                    $("#column6").click(function () { sortTable(6); });
+                    $("#column7").click(function () { sortTable(7); });
+                };
+            return {
+                init: init,
+                sortTable: sortTable
+            };
+        }();
+     
     </script>
 </html>

@@ -249,7 +249,7 @@ public partial class StravaHome : System.Web.UI.Page
         uiLtlOutput.Text += "<thead>";
         if (uiRbCycling.Checked)
         {
-            uiLtlOutput.Text += (string.Format(@"<tr><th class='w-108'>date</th><th></th><th class='w-84' onclick='sortTable(2)'>distance<br />km (miles)</th><th class='w-64' onclick='sortTable(3)'>time<br />(hrs:mins)</th><th class='w-84' onclick='sortTable(4)'>elevation gain</th><th class='w-72' onclick='sortTable(5)'>calories</th><th class='w-84' onclick='sortTable(6)'>avge watts</th><th class='w-96' onclick='sortTable(7)'>avge speed<br />km (miles) / hr</th><th class='w-84'>rides this month</th><th class='w-84'>distance this month</th></tr>"));
+            uiLtlOutput.Text += (string.Format(@"<tr><th class='w-108'>date</th><th></th><th class='w-84' id='column2'>distance<br />km (miles)</th><th class='w-64' id='column3'>time<br />(hrs:mins)</th><th class='w-84' id='column4'>elevation gain</th><th class='w-72' id='column5'>calories</th><th class='w-84' id='column6'>avge watts</th><th class='w-96' id='column7'>avge speed<br />km (miles) / hr</th><th class='w-84'>rides this month</th><th class='w-84'>distance this month</th></tr>"));
         }
         else if (uiRbSpinning.Checked)
         {
