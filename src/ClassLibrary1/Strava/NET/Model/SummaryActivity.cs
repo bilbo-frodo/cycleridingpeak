@@ -366,6 +366,8 @@ namespace Strava.NET.Model {
 
         public int LongestDistancePosition { get; set; }
 
+        public string Description { get; set; }  
+
         /// <summary>
         /// Get the string presentation of the object
         /// </summary>

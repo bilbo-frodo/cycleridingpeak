@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" EnableViewState="false" AutoEventWireup="true" CodeFile="StravaHome.aspx.cs" Inherits="StravaHome" %>
-
+<%@ Assembly Name="StravaNet" %>
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -87,6 +87,49 @@
             <asp:Literal ID="uiLtlSummary" runat="server"></asp:Literal>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col">
+            <asp:Repeater ID="uiRptCycling" runat="server" ItemType="Strava.NET.Model.SummaryActivity" OnItemDataBound="CyclingRepeater_ItemDataBound" Visible="true">
+                <HeaderTemplate>
+                    <table id='resultsTable' class='table table-striped' style='width:1200px !important'>
+                        <thead>
+                            <tr><th class='w-108'>date</th><th></th><th class='w-84' id='column2'>distance<br />km (miles)</th><th class='w-64' id='column3'>time<br />(hrs:mins)</th><th class='w-84' id='column4'>elevation gain</th><th class='w-72' id='column5'>calories</th><th class='w-84' id='column6'>avge watts</th><th class='w-96' id='column7'>avge speed<br />km (miles) / hr</th><th class='w-84'>rides this month</th><th class='w-84'>distance this month</th></tr>
+                        </thead>
+                        <tbody>
+                </HeaderTemplate>
+                <ItemTemplate>                    
+                        <tr>
+                            <td><%# ((DateTime)Item.StartDate).ToString("ddd dd MMM") %></td>
+                            <td>
+                                <a class="linkBlack" href="https://www.strava.com/activities/<%#Item.Id %>" target="_blank"><%# Item.Name %></a> 
+                                <asp:Literal ID="uiLtlShowDescription" runat="server"></asp:Literal>
+                            </td>
+                            <td class='alignright <%# Item.LongestDistancePosition > 0 ? "highlighted" : string.Empty %>'><%# string.Format(@"{0:0}",Item.Distance/1000) + "(" + string.Format(@"{0:0}",Item.Distance / 1000 * 0.6213712) +")"%></td>
+                            <td class='alignright'><%#  TimeSpan.FromSeconds((double)Item.MovingTime).ToString(@"hh\:mm") %></td>
+                            <td class='alignright'><%# string.Format(@"{0:0}",Item.TotalElevationGain) %> m</td>
+                            <td class='alignright'><%# string.Format(@"{0:0}",Item.Calories) %></td>
+                            <td class='alignright'><%# string.Format(@"{0:0}",Item.AverageWatts) %></td>
+                            <td class='alignright <%# Item.AverageSpeedPosition > 0 ? "highlighted" : "" %>'><asp:Literal ID="uiLtlAvgeSpeed" runat="server" /></td>
+                            <td class='alignright'><%# Item.ActivitiesThisMonth != 0 ? string.Format("{0:0}", Item.ActivitiesThisMonth) : string.Empty %> </td>
+                            <td class='alignright'><%# Item.ActivitiesThisMonth != 0 ? string.Format("{0:0} ({1:0})", Item.TotalDistanceThisMonth/1000, Item.TotalDistanceThisMonth / 1000 * 0.6213712) : string.Empty %> </td>
+                        </tr>
+                </ItemTemplate>
+                <FooterTemplate>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td></td>
+                                <td>No rides: <asp:Literal ID="uiLtlNoRides" runat="server"></asp:Literal></td>
+                                <td class='alignright'><asp:Literal ID="uiLtlTotalDistance" runat="server"></asp:Literal></td>
+                                <td class='alignright'><asp:Literal ID="uiLtlTotalTime" runat="server"></asp:Literal></td></tr>
+                        </tfoot>
+                    </table>
+                </FooterTemplate>
+            </asp:Repeater>
+            </div>
+        </div>
+
     </div>
     </form>
 </body>

@@ -6,6 +6,7 @@ using ClassLibrary1.Strava.NET.Api;
 using System.Globalization;
 using System.Linq;
 using System.Collections.Generic;
+using System.Web.UI.WebControls;
 
 public partial class StravaHome : System.Web.UI.Page
 {
@@ -26,6 +27,11 @@ public partial class StravaHome : System.Web.UI.Page
     private static ApiClient ApiClient = new ApiClient();
     private static ActivitiesApi ActivitiesApiInstance = new ActivitiesApi(ApiClient);
     private static Dictionary<string, DetailedActivity> DetailedActivitiesDict = new Dictionary<string, DetailedActivity>();
+
+    private int gNoRides = 0;
+    float? gTotalDistance = 0.0F;
+    float? gTotalTimeCycled = 0.0F;
+    float? gTotalTime = 0.0F;
 
     const bool DEBUG = false;
 
@@ -140,6 +146,8 @@ public partial class StravaHome : System.Web.UI.Page
 
                     var result = ActivitiesApiInstance.GetLoggedInAthleteActivities(epochToDate, epochFromDate, page: 1, perPage: 150);
 
+                    UpdateWithActivityDetails(result);  // e.g. get calories 
+
                     CalculateActivitiesByMonth(result);
                     CalculateTopAverageSpeeds(result);
                     CalculateTopDistances(result);
@@ -172,6 +180,16 @@ public partial class StravaHome : System.Web.UI.Page
             {
                 Response.Write("Exception when calling GetActivityDetailsClick: " + ex.Message);
             }
+        }
+    }
+
+    private void UpdateWithActivityDetails(List<SummaryActivity> result)
+    {
+        foreach (SummaryActivity activity in result)
+        {
+            var activityDetails = GetActivityDetails(activity);
+            activity.Calories = activityDetails.Calories;
+            activity.Description = activityDetails.Description;
         }
     }
 
@@ -236,8 +254,13 @@ public partial class StravaHome : System.Web.UI.Page
 
     private void RenderActivities(System.Collections.Generic.List<SummaryActivity> result, DateTime fromDate, DateTime endDate)
     {
-        float? totalDistance = 0.0F;
-        float? totalTimeCycled = 0.0F;
+
+        uiRptCycling.DataSource = result.Where(i => ActivityIsCycling(i));
+        uiRptCycling.DataBind();
+        uiRptCycling.Visible = true;
+
+        //float? totalDistance = 0.0F;
+        //float? totalTimeCycled = 0.0F;
         float? totalTime = 0.0F;
         float? elevationGain = 0.0F;
         int noRides = 0;
@@ -249,7 +272,7 @@ public partial class StravaHome : System.Web.UI.Page
         uiLtlOutput.Text += "<thead>";
         if (uiRbCycling.Checked)
         {
-            uiLtlOutput.Text += (string.Format(@"<tr><th class='w-108'>date</th><th></th><th class='w-84' id='column2'>distance<br />km (miles)</th><th class='w-64' id='column3'>time<br />(hrs:mins)</th><th class='w-84' id='column4'>elevation gain</th><th class='w-72' id='column5'>calories</th><th class='w-84' id='column6'>avge watts</th><th class='w-96' id='column7'>avge speed<br />km (miles) / hr</th><th class='w-84'>rides this month</th><th class='w-84'>distance this month</th></tr>"));
+            uiLtlOutput.Text += (string.Format(@"<tr><th class='w-108'>date</th><th></th><th class='w-84'>distance<br />km (miles)</th><th class='w-64' id='column3'>time<br />(hrs:mins)</th><th class='w-84' id='column4'>elevation gain</th><th class='w-72' id='column5'>calories</th><th class='w-84' id='column6'>avge watts</th><th class='w-96' id='column7'>avge speed<br />km (miles) / hr</th><th class='w-84'>rides this month</th><th class='w-84'>distance this month</th></tr>"));
         }
         else if (uiRbSpinning.Checked)
         {
@@ -271,8 +294,8 @@ public partial class StravaHome : System.Web.UI.Page
                 {
                     noRides += 1;
 
-                    totalDistance += activity.Distance;
-                    totalTimeCycled += activity.MovingTime;
+                    gTotalDistance += activity.Distance;
+                    gTotalTimeCycled += activity.MovingTime;
                     totalTime += activity.MovingTime;
                     elevationGain += activity.TotalElevationGain;
                     var avgeSpeedInKmPerHr = activity.AverageSpeed * speedConversion;
@@ -311,13 +334,13 @@ public partial class StravaHome : System.Web.UI.Page
                 }
                 else if ((uiRbCycling.Checked) && ActivityIsSpinning(activity)) // special case, for cycling, add in time spent spinning
                 {
-                    totalTimeCycled += activity.MovingTime;
+                    gTotalTimeCycled += activity.MovingTime;
                 }
                 else if ((uiRbSpinning.Checked) && ActivityIsSpinning(activity)) // if distance = 0 it's a spinning class
                 {
                     noRides += 1;
                     var time = TimeSpan.FromSeconds((double)activity.MovingTime);
-                    totalTimeCycled += activity.MovingTime;
+                    gTotalTimeCycled += activity.MovingTime;
 
                     var highestAvgeHeartRateClass = activity.AverageHrPosition > 0 ? "highlighted" : string.Empty;
                     var highestMaxHeartRateClass = activity.MaxHrPosition > 0 ? "highlighted" : string.Empty;
@@ -356,25 +379,90 @@ public partial class StravaHome : System.Web.UI.Page
         uiLtlOutput.Text += (string.Format(@"<tfoot>"));
         if (uiRbCycling.Checked)
         {
-            uiLtlOutput.Text += (string.Format(@"<tr><td></td><td>No rides {0}</td><td class='alignright'>{1:0}</td><td class='alignright'>{2:0.0}</td></tr>", noRides, totalDistance / 1000 * 0.6213712, FormatTimeInUnixTimestampToHrsMins(totalTime)));
+            uiLtlOutput.Text += (string.Format(@"<tr><td></td><td>No rides {0}</td><td class='alignright'>{1:0}</td><td class='alignright'>{2:0.0}</td></tr>", noRides, gTotalDistance / 1000 * 0.6213712, FormatTimeInUnixTimestampToHrsMins(totalTime)));
         } else
         {
-            uiLtlOutput.Text += (string.Format(@"<tr><td>No rides {0}</td><td></td><td class='alignright'>{1}</td><td></td></tr>", noRides, FormatTimeInUnixTimestampToHrsMins(totalTimeCycled)));
+            uiLtlOutput.Text += (string.Format(@"<tr><td>No rides {0}</td><td></td><td class='alignright'>{1}</td><td></td></tr>", noRides, FormatTimeInUnixTimestampToHrsMins(gTotalTimeCycled)));
         }
         uiLtlOutput.Text += (string.Format(@"</tfoot>"));
 
         uiLtlOutput.Text += (string.Format(@"</table>"));
         uiLtlOutput.Text += "</p>";
 
-        var tsTimeCycled = TimeSpan.FromSeconds((double)totalTimeCycled);
+        var tsTimeCycled = TimeSpan.FromSeconds((double)gTotalTimeCycled);
         var hoursCycled = tsTimeCycled.Days * 24 + tsTimeCycled.Hours;
 
         if (uiRbCycling.Checked)
         {
             uiLtlSummary.Text = "<p>";
-            uiLtlSummary.Text += (string.Format(@"Total distance on bike since {0:dd/MM/yyyy} is {1:0} km or {2:0} miles<br />", fromDate, totalDistance / 1000, totalDistance / 1000 * 0.6213712));
+            uiLtlSummary.Text += (string.Format(@"Total distance on bike since {0:dd/MM/yyyy} is {1:0} km or {2:0} miles<br />", fromDate, gTotalDistance / 1000, gTotalDistance / 1000 * 0.6213712));
             uiLtlSummary.Text += (string.Format(@"Total time on bike (including spinning) was {0}:{1:00} hrs:mins<br />", hoursCycled, tsTimeCycled.Minutes));
             uiLtlSummary.Text += "</p>";
+        }
+    }
+
+    protected void CyclingRepeater_ItemDataBound(object sender, RepeaterItemEventArgs e)
+    {
+        try
+        {            
+            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+            {
+                gNoRides += 1;
+
+                var activity = e.Item.DataItem as SummaryActivity;
+                if (activity != null)
+                {
+                    gTotalDistance += activity.Distance;
+                    gTotalTime += activity.MovingTime;
+
+                    float? speedConversion = 3.6F; //don't know what the units are for 'avge speed' returned by strava
+                    var avgeSpeedInKmPerHr = activity.AverageSpeed * speedConversion;
+                    var avgeSpeedInMilesPerHr = avgeSpeedInKmPerHr * 0.6;
+                    var highestSpeedBackgroundClass = activity.AverageSpeedPosition > 0 ? "highlighted" : "";
+
+                    Literal uiLtlAvgeSpeed = (Literal)e.Item.FindControl("uiLtlAvgeSpeed");
+                    if (uiLtlAvgeSpeed != null)
+                    {
+                        uiLtlAvgeSpeed.Text = string.Format("{0:0.0} ({1:0.0})", avgeSpeedInKmPerHr, avgeSpeedInMilesPerHr);
+                    }
+
+                    Literal uiLtlShowDescription = (Literal)e.Item.FindControl("uiLtlShowDescription");
+                    if (uiLtlShowDescription != null)
+                    {
+                        /*
+                         * <a href="#demo1" data-toggle="collapse">+</a>
+                         * <div id="demo1" class="collapse">first ride with garmin</div>
+                         */
+                        // if there's a description plant a link to it
+                        var linkToDescription = activity.Description != null && activity.Description.Trim().Length > 0 ?
+                            "<a href='#demo" + gNoRides + "' data-toggle='collapse'>+</a>" + "<div id='demo" + gNoRides + "' class='collapse'>" + activity.Description + "</div>" : string.Empty;
+
+                        uiLtlShowDescription.Text = linkToDescription;
+                    }
+                }
+            }
+            if (e.Item.ItemType == ListItemType.Footer)
+            {
+                Literal uiLtlNoRides = (Literal)e.Item.FindControl("uiLtlNoRides");
+                if (uiLtlNoRides != null)
+                {
+                    uiLtlNoRides.Text = string.Format("{0:0}", gNoRides);
+                }
+                Literal uiLtlTotalDistance = (Literal)e.Item.FindControl("uiLtlTotalDistance");
+                if (uiLtlTotalDistance != null)
+                {
+                    uiLtlTotalDistance.Text = string.Format("{0:0}", gTotalDistance / 1000 * 0.6213712);
+                }
+                Literal uiLtlTotalTime = (Literal)e.Item.FindControl("uiLtlTotalTime");
+                if (uiLtlTotalTime != null)
+                {
+                    uiLtlTotalTime.Text = string.Format("{0:0}", FormatTimeInUnixTimestampToHrsMins(gTotalTime));
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+
         }
     }
 
@@ -678,3 +766,4 @@ public partial class StravaHome : System.Web.UI.Page
         return rc;
     }
 }
+ 
