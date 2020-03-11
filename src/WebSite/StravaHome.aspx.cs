@@ -255,10 +255,6 @@ public partial class StravaHome : System.Web.UI.Page
     private void RenderActivities(System.Collections.Generic.List<SummaryActivity> result, DateTime fromDate, DateTime endDate)
     {
 
-        uiRptCycling.DataSource = result.Where(i => ActivityIsCycling(i));
-        uiRptCycling.DataBind();
-        uiRptCycling.Visible = true;
-
         //float? totalDistance = 0.0F;
         //float? totalTimeCycled = 0.0F;
         float? totalTime = 0.0F;
@@ -266,17 +262,18 @@ public partial class StravaHome : System.Web.UI.Page
         int noRides = 0;
         float? speedConversion = 3.6F; //don't know what the units are for 'avge speed' returned by strava
 
-        // render table header
-        uiLtlOutput.Text += "<p>";
-        uiLtlOutput.Text += (string.Format(@"<table id='resultsTable' class='table table-striped' style='width:1200px !important'>"));
-        uiLtlOutput.Text += "<thead>";
         if (uiRbCycling.Checked)
         {
-            uiLtlOutput.Text += (string.Format(@"<tr><th class='w-108'>date</th><th></th><th class='w-84'>distance<br />km (miles)</th><th class='w-64' id='column3'>time<br />(hrs:mins)</th><th class='w-84' id='column4'>elevation gain</th><th class='w-72' id='column5'>calories</th><th class='w-84' id='column6'>avge watts</th><th class='w-96' id='column7'>avge speed<br />km (miles) / hr</th><th class='w-84'>rides this month</th><th class='w-84'>distance this month</th></tr>"));
+            uiRptCycling.DataSource = result.Where(i => ActivityIsCycling(i));
+            uiRptCycling.DataBind();
+            uiRptCycling.Visible = true;
         }
         else if (uiRbSpinning.Checked)
         {
-            uiLtlOutput.Text += (string.Format(@"<tr><th>date</th><th class='w-64'>calories</th><th class='w-108'>time<br />(hrs:mins)</th><th class='w-108'>avge HR</th><th class='w-64'>max HR</th><th class='w-84'>rides this month</th></tr>"));
+            //uiLtlOutput.Text += (string.Format(@"<tr><th>date</th><th class='w-64'>calories</th><th class='w-108'>time<br />(hrs:mins)</th><th class='w-108'>avge HR</th><th class='w-64'>max HR</th><th class='w-84'>rides this month</th></tr>"));
+            uiRptSpinning.DataSource = result.Where(i => ActivityIsSpinning(i));
+            uiRptSpinning.DataBind();
+            uiRptSpinning.Visible = true;
         }
         else if (uiRbParkrun.Checked)
         {
@@ -290,7 +287,7 @@ public partial class StravaHome : System.Web.UI.Page
         {
             if (activity.StartDate > fromDate && activity.StartDate < endDate.AddDays(1))
             {
-                if ((uiRbCycling.Checked) && ActivityIsCycling(activity))  // if distance > 0 it's road cycling 
+                if ((uiRbCycling.Checked) && ActivityIsCycling(activity) && false)  // if distance > 0 it's road cycling 
                 {
                     noRides += 1;
 
@@ -336,8 +333,13 @@ public partial class StravaHome : System.Web.UI.Page
                 {
                     gTotalTimeCycled += activity.MovingTime;
                 }
-                else if ((uiRbSpinning.Checked) && ActivityIsSpinning(activity)) // if distance = 0 it's a spinning class
+                else if ((uiRbSpinning.Checked) && ActivityIsSpinning(activity) && false) // if distance = 0 it's a spinning class
                 {
+                    // render table header
+                    uiLtlOutput.Text += "<p>";
+                    uiLtlOutput.Text += (string.Format(@"<table id='resultsTable' class='table table-striped' style='width:1200px !important'>"));
+                    uiLtlOutput.Text += "<thead>";
+
                     noRides += 1;
                     var time = TimeSpan.FromSeconds((double)activity.MovingTime);
                     gTotalTimeCycled += activity.MovingTime;
@@ -362,6 +364,11 @@ public partial class StravaHome : System.Web.UI.Page
                         calories,
                         activity.ActivitiesThisMonth != 0 ? activity.ActivitiesThisMonth.ToString() : string.Empty
                         );
+
+                    uiLtlOutput.Text += (string.Format(@"</tfoot>"));
+
+                    uiLtlOutput.Text += (string.Format(@"</table>"));
+                    uiLtlOutput.Text += "</p>";
                 }
                 else if ((uiRbParkrun.Checked) && (activity.Type.ToLower() == "walk"))
                 {
@@ -375,19 +382,16 @@ public partial class StravaHome : System.Web.UI.Page
         }
 
 
-        // render footers
-        uiLtlOutput.Text += (string.Format(@"<tfoot>"));
-        if (uiRbCycling.Checked)
-        {
-            uiLtlOutput.Text += (string.Format(@"<tr><td></td><td>No rides {0}</td><td class='alignright'>{1:0}</td><td class='alignright'>{2:0.0}</td></tr>", noRides, gTotalDistance / 1000 * 0.6213712, FormatTimeInUnixTimestampToHrsMins(totalTime)));
-        } else
-        {
-            uiLtlOutput.Text += (string.Format(@"<tr><td>No rides {0}</td><td></td><td class='alignright'>{1}</td><td></td></tr>", noRides, FormatTimeInUnixTimestampToHrsMins(gTotalTimeCycled)));
-        }
-        uiLtlOutput.Text += (string.Format(@"</tfoot>"));
+        //// render footers
+        //uiLtlOutput.Text += (string.Format(@"<tfoot>"));
+        //if (uiRbCycling.Checked && false)
+        //{
+        //    uiLtlOutput.Text += (string.Format(@"<tr><td></td><td>No rides {0}</td><td class='alignright'>{1:0}</td><td class='alignright'>{2:0.0}</td></tr>", noRides, gTotalDistance / 1000 * 0.6213712, FormatTimeInUnixTimestampToHrsMins(totalTime)));
+        //} else
+        //{
+        //    uiLtlOutput.Text += (string.Format(@"<tr><td>No rides {0}</td><td></td><td class='alignright'>{1}</td><td></td></tr>", noRides, FormatTimeInUnixTimestampToHrsMins(gTotalTimeCycled)));
+        //}
 
-        uiLtlOutput.Text += (string.Format(@"</table>"));
-        uiLtlOutput.Text += "</p>";
 
         var tsTimeCycled = TimeSpan.FromSeconds((double)gTotalTimeCycled);
         var hoursCycled = tsTimeCycled.Days * 24 + tsTimeCycled.Hours;
@@ -396,15 +400,50 @@ public partial class StravaHome : System.Web.UI.Page
         {
             uiLtlSummary.Text = "<p>";
             uiLtlSummary.Text += (string.Format(@"Total distance on bike since {0:dd/MM/yyyy} is {1:0} km or {2:0} miles<br />", fromDate, gTotalDistance / 1000, gTotalDistance / 1000 * 0.6213712));
-            uiLtlSummary.Text += (string.Format(@"Total time on bike (including spinning) was {0}:{1:00} hrs:mins<br />", hoursCycled, tsTimeCycled.Minutes));
+            uiLtlSummary.Text += (string.Format(@"Total time spinning was {0}:{1:00} hrs:mins<br />", hoursCycled, tsTimeCycled.Minutes));
             uiLtlSummary.Text += "</p>";
         }
     }
 
+    protected void SpinningRepeater_ItemDataBound(object sender, RepeaterItemEventArgs e)
+    {
+        try
+        {
+            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+            {
+                gNoRides += 1;
+                var activity = e.Item.DataItem as SummaryActivity;
+                if (activity != null)
+                {
+                    gTotalTime += activity.MovingTime;
+                }
+            }
+            if (e.Item.ItemType == ListItemType.Footer)
+            {
+                Literal uiLtlNoRides = (Literal)e.Item.FindControl("uiLtlNoRides");
+                if (uiLtlNoRides != null)
+                {
+                    uiLtlNoRides.Text = string.Format("{0:0}", gNoRides);
+                }
+                Literal uiLtlTotalTime = (Literal)e.Item.FindControl("uiLtlTotalTime");
+                if (uiLtlTotalTime != null)
+                {
+                    uiLtlTotalTime.Text = string.Format("{0:0}", FormatTimeInUnixTimestampToHrsMins(gTotalTime));
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+
+        }
+
+    }
+
+
     protected void CyclingRepeater_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
         try
-        {            
+        {
             if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
             {
                 gNoRides += 1;
