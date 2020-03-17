@@ -22,6 +22,7 @@
         .w-84 {width:84px; text-align:right;}
         .w-72 {width:72px; text-align:right;}
         .w-64 {width:64px; text-align:right;}
+        .w-0 {width:0; display:none;}
         .form-rounded {border-radius:4px; border-width:0px; padding: 2px;}
         .error {color:red;}
         .ui-datepicker table {
@@ -88,7 +89,7 @@
                     <HeaderTemplate>
                         <table id='resultsTable' class='table table-striped' style='width:1200px !important'>
                             <thead>
-                                <tr><th class='w-108'>date</th><th></th><th class='w-84' id='column2'>distance<br />km (miles)</th><th class='w-64' id='column3'>time<br />(hrs:mins)</th><th class='w-84' id='column4'>elevation gain</th><th class='w-72' id='column5'>calories</th><th class='w-84' id='column6'>avge watts</th><th class='w-96' id='column7'>avge speed<br />km (miles) / hr</th><th class='w-84'>rides this month</th><th class='w-84'>distance this month</th></tr>
+                                <tr><th class='w-108' id='column1'>date</th><th></th><th class='w-84' id='column2'>distance<br />km (miles)</th><th class='w-64' id='column3'>time<br />(hrs:mins)</th><th class='w-84' id='column4'>elevation gain</th><th class='w-72' id='column5'>calories</th><th class='w-84' id='column6'>avge watts</th><th class='w-96' id='column7'>avge speed<br />km (miles) / hr</th><th class='w-84'>rides this month</th><th class='w-84'>distance this month</th><th class='w-0'>date</th></tr>
                             </thead>
                             <tbody>
                     </HeaderTemplate>
@@ -107,6 +108,7 @@
                                 <td class='alignright <%# Item.AverageSpeedPosition > 0 ? "highlighted" : "" %>'><asp:Literal ID="uiLtlAvgeSpeed" runat="server" /></td>
                                 <td class='alignright'><%# Item.ActivitiesThisMonth != 0 ? string.Format("{0:0}", Item.ActivitiesThisMonth) : string.Empty %> </td>
                                 <td class='alignright'><%# Item.ActivitiesThisMonth != 0 ? string.Format("{0:0} ({1:0})", Item.TotalDistanceThisMonth/1000, Item.TotalDistanceThisMonth / 1000 * 0.6213712) : string.Empty %> </td>
+                                <td class='w-0'><%# ((DateTime)Item.StartDate).ToString("yyyyMMdd.0") %></td>
                             </tr>
                     </ItemTemplate>
                     <FooterTemplate>
@@ -251,7 +253,8 @@
                      * 
                      * /i  #case insensitive
                      */
-                    var rc = Number(text.replace(/(^\d+\.\d{1,2}|\d+)(.+$)/i, '$1'));
+                    var rc = text.replace(":", ".");  // one field has numeric values such as 01:39  representing hrs:mins
+                    var rc = Number(rc.replace(/(^\d+\.\d{1,2}|\d+)(.+$)/i, '$1'));
                     return rc;
                 },
 
@@ -276,6 +279,7 @@
                             //get the two elements you want to compare, one from current row and one from the next:
                             x = rows[i].getElementsByTagName("TD")[n];
                             y = rows[i + 1].getElementsByTagName("TD")[n];
+
                             //check if the two rows should switch place, based on the direction, asc or desc:
                             //the regex replace extracts the first number in the string e.g. returns '24' from '24(15)'                    
                             if (dir == "asc") {
@@ -315,6 +319,7 @@
                     $("#column5").click(function () { sortTable(5); });
                     $("#column6").click(function () { sortTable(6); });
                     $("#column7").click(function () { sortTable(7); });
+                    $("#column1").click(function () { sortTable(10); });  // sort on the hidden col at the far rhs
                 };
             return {
                 init: init,
