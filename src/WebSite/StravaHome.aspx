@@ -253,8 +253,8 @@
                      * 
                      * /i  #case insensitive
                      */
-                    var rc = text.replace(":", ".");  // one field has numeric values such as 01:39  representing hrs:mins
-                    var rc = Number(rc.replace(/(^\d+\.\d{1,2}|\d+)(.+$)/i, '$1'));
+                    var rc = text.replace(":", ".");  // one field has numeric values such as 01:39  representing hrs:mins, so replace ':' with '.' to make it a decimal 
+                    var rc = Number(rc.replace(/(^\d+\.\d{1,2}|\d+)(.*$)/i, '$1'));
                     return rc;
                 },
 
