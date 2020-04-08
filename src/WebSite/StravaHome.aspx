@@ -89,7 +89,20 @@
                     <HeaderTemplate>
                         <table id='resultsTable' class='table table-striped' style='width:1200px !important'>
                             <thead>
-                                <tr><th class='w-108' id='column1'>date</th><th></th><th class='w-84' id='column2'>distance<br />km (miles)</th><th class='w-64' id='column3'>time<br />(hrs:mins)</th><th class='w-84' id='column4'>elevation gain</th><th class='w-72' id='column5'>calories</th><th class='w-84' id='column6'>avge watts</th><th class='w-96' id='column7'>avge speed<br />km (miles) / hr</th><th class='w-84'>rides this month</th><th class='w-84'>distance this month</th><th class='w-0'>date</th></tr>
+                                <tr>
+                                    <th class='w-108' id='column1'>date</th>
+                                    <th></th>
+                                    <th class='w-84' id='column2'>distance<br />km (miles)</th>
+                                    <th class='w-64' id='column3'>time<br />(hrs:mins)</th>
+                                    <th class='w-84' id='column4'>elevation gain</th>
+                                    <th class='w-72' id='column5'>calories</th>
+                                    <th class='w-84' id='column6'>avge watts</th>
+                                    <th class='w-96' id='column7'>avge speed<br />km (miles)<br />per hr</th>
+                                    <th class='w-96' id='column8'>avge/max heart rate</th>
+                                    <th class='w-84'>rides this month</th>
+                                    <th class='w-84'>distance this month</th>
+                                    <th class='w-0'>date</th>
+                                </tr>
                             </thead>
                             <tbody>
                     </HeaderTemplate>
@@ -106,6 +119,7 @@
                                 <td class='alignright'><%# string.Format(@"{0:0}",Item.Calories) %></td>
                                 <td class='alignright'><%# string.Format(@"{0:0}",Item.AverageWatts) %></td>
                                 <td class='alignright <%# Item.AverageSpeedPosition > 0 ? "highlighted" : "" %>'><asp:Literal ID="uiLtlAvgeSpeed" runat="server" /></td>
+                                <td class='alignright'><%# string.Format(@"{0:0}{1}{2:0}",Item.AvgeHeartRate, !string.IsNullOrEmpty(Item.AvgeHeartRate.ToString())?"/":"", Item.MaxHeartRate) %></td>
                                 <td class='alignright'><%# Item.ActivitiesThisMonth != 0 ? string.Format("{0:0}", Item.ActivitiesThisMonth) : string.Empty %> </td>
                                 <td class='alignright'><%# Item.ActivitiesThisMonth != 0 ? string.Format("{0:0} ({1:0})", Item.TotalDistanceThisMonth/1000, Item.TotalDistanceThisMonth / 1000 * 0.6213712) : string.Empty %> </td>
                                 <td class='w-0'><%# ((DateTime)Item.StartDate).ToString("yyyyMMdd.0") %></td>
