@@ -333,7 +333,8 @@
                     $("#column5").click(function () { sortTable(5); });
                     $("#column6").click(function () { sortTable(6); });
                     $("#column7").click(function () { sortTable(7); });
-                    $("#column1").click(function () { sortTable(10); });  // sort on the hidden col at the far rhs
+                    $("#column8").click(function () { sortTable(8); });
+                    $("#column1").click(function () { sortTable(11); });  // sort on the hidden col at the far rhs
                 };
             return {
                 init: init,
