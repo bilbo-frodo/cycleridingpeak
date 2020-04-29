@@ -13,6 +13,7 @@
 
     <style>
         div, table {font-size:12px;}
+        th {background: white; position: sticky; top: 0;}
         td.alignright {text-align:right;}
         td.highlighted {color:orange;}
         a.linkBlack {color:black;}
