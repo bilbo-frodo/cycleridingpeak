@@ -320,6 +320,7 @@ public partial class StravaHome : System.Web.UI.Page
 
     protected void CyclingRepeater_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
+        double kilometersToMilesConversionFactor = 0.6213712;
         try
         {
             if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
@@ -334,7 +335,7 @@ public partial class StravaHome : System.Web.UI.Page
 
                     float? speedConversion = 3.6F; //don't know what the units are for 'avge speed' returned by strava
                     var avgeSpeedInKmPerHr = activity.AverageSpeed * speedConversion;
-                    var avgeSpeedInMilesPerHr = avgeSpeedInKmPerHr * 0.6;
+                    var avgeSpeedInMilesPerHr = avgeSpeedInKmPerHr * kilometersToMilesConversionFactor;
                     var highestSpeedBackgroundClass = activity.AverageSpeedPosition > 0 ? "highlighted" : "";
 
                     Literal uiLtlAvgeSpeed = (Literal)e.Item.FindControl("uiLtlAvgeSpeed");
