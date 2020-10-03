@@ -143,13 +143,16 @@
                 <HeaderTemplate>
                     <table id='resultsTableSpinning' class='table table-striped' style='width:1200px !important'>
                         <thead>
-                            <tr><th>date</th><th class='w-64'>calories</th><th class='w-108'>time<br />(hrs:mins)</th><th class='w-108'>avge HR</th><th class='w-64'>max HR</th><th class='w-84'>rides this month</th></tr>
+                            <tr><th class='w-108'>date</th><th></th><th class='w-64'>calories</th><th class='w-108'>time<br />(hrs:mins)</th><th class='w-108'>avge HR</th><th class='w-64'>max HR</th><th class='w-84'>rides this month</th></tr>
                         </thead>
                         <tbody>
                 </HeaderTemplate>
                 <ItemTemplate>
                     <tr>
                         <td><%# ((DateTime)Item.StartDate).ToString("ddd dd MMM") %> <%# Item.Description %></td>
+                        <td>
+                            <a class="linkBlack" href="https://www.strava.com/activities/<%#Item.Id %>" target="_blank"><%# Item.Name %></a> 
+                        </td>
                         <td class='alignright'><%# string.Format(@"{0:0}",Item.Calories) %></td>
                         <td class='alignright'><%#  TimeSpan.FromSeconds((double)Item.MovingTime).ToString(@"hh\:mm") %></td>
                         <td class='alignright <%# Item.AverageHrPosition > 0 ? "highlighted" : "" %>'><%# string.Format(@"{0:0}",Item.AvgeHeartRate) %></td>

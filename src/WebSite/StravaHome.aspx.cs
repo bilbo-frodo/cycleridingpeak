@@ -33,6 +33,11 @@ public partial class StravaHome : System.Web.UI.Page
     float? gTotalTimeCycled = 0.0F;
     float? gTotalTime = 0.0F;
 
+    // Gear Id's as per Strava
+    private const string Roadie2 = "b7095592";
+    private const string GoodOlBoy = "b6051885";
+    private const string Wattbike = "b8127428";
+
     const bool DEBUG = false;
 
     private static readonly string State = new Random().Next(0, 100000).ToString("000000"); // CryptoRandom.CreateUniqueId();
@@ -705,12 +710,17 @@ public partial class StravaHome : System.Web.UI.Page
 
     private bool ActivityIsCycling(SummaryActivity activity)
     {
-        return (activity.Distance > 0) && (activity.Type.ToLower() == "ride");
+        return (activity.Distance > 0) && (activity.Type.ToLower() == "ride") && (!ActivityIsWattbike(activity));
+    }
+
+    private bool ActivityIsWattbike(SummaryActivity activity)
+    {
+        return (activity.GearId == Wattbike) || (activity.Name.ToLower().Contains("wattbike"));
     }
 
     private bool ActivityIsSpinning(SummaryActivity activity)
     {
-        return (activity.Distance == 0);
+        return ((activity.Distance == 0) || (ActivityIsWattbike(activity)));
     }
 
     private string FormatTimeInUnixTimestampToHrsMins(float? totalTimeCycled)
