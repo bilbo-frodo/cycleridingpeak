@@ -577,7 +577,7 @@ public partial class StravaHome : System.Web.UI.Page
             foreach (var sortedEntry in sortByDate)
             {
                 // only interested in cycle rides and spinning for now
-                if (((uiRbCycling.Checked) && (sortedEntry.Distance > 0) && (sortedEntry.Type.ToLower() == "ride"))  // if distance > 0 it's road cycling 
+                if (((uiRbCycling.Checked) && (sortedEntry.Distance > 0) && (sortedEntry.Type.ToLower() == "ride") && (!ActivityIsWattbike(sortedEntry)))  // if distance > 0 it's road cycling 
                     ||
                     (uiRbSpinning.Checked) && (sortedEntry.Distance == 0))
                 {
