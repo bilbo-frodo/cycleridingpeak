@@ -17,6 +17,7 @@
         td.alignright {text-align:right;}
         td.highlighted {color:orange;}
         a.linkBlack {color:black;}
+        ul li.nav-link label {margin-left:6px;}
         .w-200{ width: 200px !important; }
         .w-108 {width:108px; text-align:right;}
         .w-96 {width:96px; text-align:right;}
