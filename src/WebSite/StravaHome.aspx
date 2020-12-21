@@ -124,7 +124,7 @@
                                 </td>
                                 <td class='alignright <%# Item.LongestDistancePosition > 0 ? "highlighted" : string.Empty %>'><%# string.Format(@"{0:0}",Item.Distance/1000) + "(" + string.Format(@"{0:0}",Item.Distance / 1000 * 0.6213712) +")"%></td>
                                 <td class='alignright'><%#  TimeSpan.FromSeconds((double)Item.MovingTime).ToString(@"hh\:mm") %></td>
-                                <td class='alignright'><%# string.Format(@"{0:0}",Item.TotalElevationGain) %> m</td>
+                                <td class='alignright'><%# string.Format(@"{0:0}",Item.TotalElevationGain * 3.28084) %> ft</td>
                                 <td class='alignright'><%# string.Format(@"{0:0}",Item.Calories) %></td>
                                 <td class='alignright'><%# string.Format(@"{0:0}",Item.AverageWatts) %></td>
                                 <td class='alignright <%# Item.AverageSpeedPosition > 0 ? "highlighted" : "" %>'><asp:Literal ID="uiLtlAvgeSpeed" runat="server" /></td>
