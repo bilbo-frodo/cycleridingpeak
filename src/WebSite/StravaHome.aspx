@@ -72,6 +72,13 @@
             <li class="nav-link">
             <asp:RadioButton ID="uiRbParkrun" Text="Park Run" GroupName="ActivityType" runat="server" Visible="false" />
                 </li>
+            <li class="nav-link">
+                <label for="uiDdlGearId">Bike:</label>
+                <asp:DropDownList ID="uiDdlGearId" runat="server">
+                    <asp:ListItem Text="Roadie" Selected="True" ></asp:ListItem>
+                    <asp:ListItem Text="MTB"></asp:ListItem>
+                </asp:DropDownList>
+            </li>
         </ul>
         
         

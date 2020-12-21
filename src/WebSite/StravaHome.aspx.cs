@@ -34,8 +34,8 @@ public partial class StravaHome : System.Web.UI.Page
     float? gTotalTime = 0.0F;
 
     // Gear Id's as per Strava
-    private const string Roadie2 = "b7095592";
-    private const string GoodOlBoy = "b6051885";
+    protected const string Roadie2 = "b7095592";
+    protected const string GoodOlBoy = "b6051885";
     private const string Wattbike = "b8127428";
 
     const bool DEBUG = false;
@@ -273,7 +273,15 @@ public partial class StravaHome : System.Web.UI.Page
 
         if (uiRbCycling.Checked)
         {
-            uiRptCycling.DataSource = result.Where(i => ActivityIsCycling(i));
+            bool activitiesForRoadie2 = uiDdlGearId.SelectedValue.ToLower()=="roadie"; 
+            if (activitiesForRoadie2)
+            {
+                uiRptCycling.DataSource = result.Where(i => ActivityIsCycling(i) && GearIsRoadie2(i));
+            } else
+            {
+                uiRptCycling.DataSource = result.Where(i => ActivityIsCycling(i) && GearIsGoodOlBoy(i));
+            }
+
             uiRptCycling.DataBind();
             uiRptCycling.Visible = true;
         }
@@ -721,6 +729,16 @@ public partial class StravaHome : System.Web.UI.Page
     private bool ActivityIsSpinning(SummaryActivity activity)
     {
         return ((activity.Distance == 0) || (ActivityIsWattbike(activity)));
+    }
+
+    private bool GearIsRoadie2(SummaryActivity activity)
+    {
+        return (activity.GearId == Roadie2);
+    }
+
+    private bool GearIsGoodOlBoy(SummaryActivity activity)
+    {
+        return (activity.GearId == GoodOlBoy);
     }
 
     private string FormatTimeInUnixTimestampToHrsMins(float? totalTimeCycled)
