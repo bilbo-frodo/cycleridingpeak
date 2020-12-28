@@ -35,6 +35,7 @@ public partial class StravaHome : System.Web.UI.Page
 
     // Gear Id's as per Strava
     protected const string Roadie2 = "b7095592";
+    protected const string Roadie = "b6051881";
     protected const string GoodOlBoy = "b6051885";
     private const string Wattbike = "b8127428";
 
@@ -273,11 +274,13 @@ public partial class StravaHome : System.Web.UI.Page
 
         if (uiRbCycling.Checked)
         {
-            bool activitiesForRoadie2 = uiDdlGearId.SelectedValue.ToLower()=="roadie"; 
-            if (activitiesForRoadie2)
+            bool activitiesForRoadie = uiDdlGearId.SelectedValue.ToLower()=="roadie";
+            bool activitiesForRoadie2 = uiDdlGearId.SelectedValue.ToLower() == "roadie2";
+            if (activitiesForRoadie ||activitiesForRoadie2)  // show results for both roadies
             {
-                uiRptCycling.DataSource = result.Where(i => ActivityIsCycling(i) && GearIsRoadie2(i));
-            } else
+                uiRptCycling.DataSource = result.Where(i => ActivityIsCycling(i) && (GearIsRoadie2(i) || GearIsRoadie(i)));
+            }
+            else
             {
                 uiRptCycling.DataSource = result.Where(i => ActivityIsCycling(i) && GearIsGoodOlBoy(i));
             }
@@ -729,6 +732,11 @@ public partial class StravaHome : System.Web.UI.Page
     private bool ActivityIsSpinning(SummaryActivity activity)
     {
         return ((activity.Distance == 0) || (ActivityIsWattbike(activity)));
+    }
+
+    private bool GearIsRoadie(SummaryActivity activity)
+    {
+        return (activity.GearId == Roadie);
     }
 
     private bool GearIsRoadie2(SummaryActivity activity)

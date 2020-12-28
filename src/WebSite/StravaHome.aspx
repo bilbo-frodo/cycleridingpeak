@@ -75,8 +75,9 @@
             <li class="nav-link">
                 <label for="uiDdlGearId">Bike:</label>
                 <asp:DropDownList ID="uiDdlGearId" runat="server">
-                    <asp:ListItem Text="Roadie" Selected="True" ></asp:ListItem>
+                    <asp:ListItem Text="Roadie2" Selected="True" ></asp:ListItem>
                     <asp:ListItem Text="MTB"></asp:ListItem>
+                    <asp:ListItem Text="Roadie"></asp:ListItem>
                 </asp:DropDownList>
             </li>
         </ul>
