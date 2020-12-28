@@ -274,15 +274,24 @@ public partial class StravaHome : System.Web.UI.Page
 
         if (uiRbCycling.Checked)
         {
-            bool activitiesForRoadie = uiDdlGearId.SelectedValue.ToLower()=="roadie";
-            bool activitiesForRoadie2 = uiDdlGearId.SelectedValue.ToLower() == "roadie2";
-            if (activitiesForRoadie ||activitiesForRoadie2)  // show results for both roadies
+            bool activitiesForRoadie = uiDdlGearId.SelectedValue.ToLower()=="roadie";       // roadie is my first road bike, the one which was stolen
+            bool activitiesForRoadie2 = uiDdlGearId.SelectedValue.ToLower() == "roadie2";   // roadie2 is the 2020 Giant Defy bought from PedalOn
+            bool activitiesForGoodOlBoy = uiDdlGearId.SelectedValue.ToLower() == "mtb";     // mtb is my old mountain bike aka goodoldboy
+            if (activitiesForRoadie2)
             {
-                uiRptCycling.DataSource = result.Where(i => ActivityIsCycling(i) && (GearIsRoadie2(i) || GearIsRoadie(i)));
+                uiRptCycling.DataSource = result.Where(i => ActivityIsCycling(i) && GearIsRoadie2(i));
+            }
+            else if (activitiesForRoadie)
+            {
+                uiRptCycling.DataSource = result.Where(i => ActivityIsCycling(i) && GearIsRoadie(i));
+            }
+            else if (activitiesForGoodOlBoy)
+            {
+                uiRptCycling.DataSource = result.Where(i => ActivityIsCycling(i) && GearIsGoodOlBoy(i));
             }
             else
             {
-                uiRptCycling.DataSource = result.Where(i => ActivityIsCycling(i) && GearIsGoodOlBoy(i));
+                uiRptCycling.DataSource = result.Where(i => ActivityIsCycling(i));
             }
 
             uiRptCycling.DataBind();
