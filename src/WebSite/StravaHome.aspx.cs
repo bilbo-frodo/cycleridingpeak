@@ -378,7 +378,7 @@ public partial class StravaHome : System.Web.UI.Page
                          */
                         // if there's a description plant a link to it
                         var linkToDescription = activity.Description != null && activity.Description.Trim().Length > 0 ?
-                            "<a href='#demo" + gNoRides + "' data-toggle='collapse'>+</a>" + "<div id='demo" + gNoRides + "' class='collapse'>" + activity.Description + "</div>" : string.Empty;
+                            "<a href='#demo" + gNoRides + "' data-toggle='collapse'><span class='fa fa-plus'></span></a>" + "<div id='demo" + gNoRides + "' class='collapse'>" + activity.Description + "</div>" : string.Empty;
 
                         uiLtlShowDescription.Text = linkToDescription;
                     }

@@ -7,6 +7,7 @@
     <title>strava.net</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
@@ -34,15 +35,19 @@
             font-family:verdana;
             margin: 0 0 .4em;
         }
+        
+        .navbar {width:1200px !important;}
+        .nav-link.right {position:absolute; right:0;}
         .btn-default {background-color: #fff; border-width:thin;}
-        .nav-link.right {position:absolute; right:120px;}
+        .fa {font-size:8px; color:gray;}
+
     </style>
 </head>
 <body>
     <form id="form1" runat="server" dir="auto" defaultbutton="GetActivities">
     <div class="container-fluid">
         <!-- A grey horizontal navbar that becomes vertical on small screens -->
-        <nav class="navbar navbar-expand-sm bg-light" style="width:1200px !important;">
+        <nav class="navbar navbar-expand-sm bg-light">
             <ul class="navbar-nav">
                 <li class="nav-item">
                     <asp:Button ID="GetTokenButton" runat="server" Text="Authorise" OnClick="GetCodeButton_Click" CssClass="nav-link" />
@@ -84,7 +89,7 @@
                 </asp:DropDownList>
             </li>
             <li class="nav-link right">
-                <button type="button" class="btn-default" onclick="toggleComments()">toggle comments</button>
+                <button type="button" class="btn-default" onclick="strava.Comments.toggleComments()">toggle comments</button>
             </li>
         </ul>
         
@@ -205,6 +210,9 @@
             strava.hookupGetAthlete.init();
 
             tableSort.init();
+
+            strava.Comments.init();
+
         });
 
         strava.init = function () {
@@ -216,9 +224,26 @@
             });
         };
 
-        toggleComments = function () {
-            $('.collapse').collapse('toggle');
-        }
+        strava.Comments = function () {
+
+            init = function () {
+                // wire up the click event on the  +/- 's
+                $('.fa.fa-plus').click(function () {
+                    $(this).toggleClass("fa fa-plus").toggleClass("fa fa-minus");
+                });
+            },
+                switchAwesomeIcons = function () {
+                    $('.collapse').collapse('toggle');
+                    // switch Awesome icons +/-
+                    $('.fa-plus').toggleClass("fa fa-plus").toggleClass("abc");
+                    $('.fa-minus').toggleClass("fa fa-minus").toggleClass("fa fa-plus");
+                    $('.abc').toggleClass("abc").toggleClass("fa fa-minus");
+                };
+            return {
+                init: init,
+                toggleComments: switchAwesomeIcons
+            };
+        }();
 
         strava.hookupGetAthlete = function () {
             'use strict';
