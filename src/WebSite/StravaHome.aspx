@@ -34,6 +34,8 @@
             font-family:verdana;
             margin: 0 0 .4em;
         }
+        .btn-default {background-color: #fff; border-width:thin;}
+        .nav-link.right {position:absolute; right:120px;}
     </style>
 </head>
 <body>
@@ -80,6 +82,9 @@
                     <asp:ListItem Text="MTB"></asp:ListItem>
                     <asp:ListItem Text="Roadie"></asp:ListItem>
                 </asp:DropDownList>
+            </li>
+            <li class="nav-link right">
+                <button type="button" class="btn-default" onclick="toggleComments()">toggle comments</button>
             </li>
         </ul>
         
@@ -210,6 +215,10 @@
                 dateFormat: "dd/mm/yy"
             });
         };
+
+        toggleComments = function () {
+            $('.collapse').collapse('toggle');
+        }
 
         strava.hookupGetAthlete = function () {
             'use strict';
