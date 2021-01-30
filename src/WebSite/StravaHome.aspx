@@ -88,8 +88,9 @@
                     <asp:ListItem Text="Roadie"></asp:ListItem>
                 </asp:DropDownList>
             </li>
-            <li class="nav-link right">
-                <button type="button" class="btn-default" onclick="strava.Comments.toggleComments()">toggle comments</button>
+            <li class="nav-link right">                
+                <button type="button" class="btn-default" onclick="strava.Comments.toggleComments()">toggle comments</button>&nbsp;
+                <asp:Literal ID="uiLtlShowMTBIcon" runat="server" Visible="true"><i class="fa fa-bicycle" aria-hidden="true"></i>=MTB</asp:Literal>
             </li>
         </ul>
         
@@ -141,7 +142,7 @@
                                 <td class='alignright'><%# string.Format(@"{0:0}",Item.AverageWatts) %></td>
                                 <td class='alignright <%# Item.AverageSpeedPosition > 0 ? "highlighted" : "" %>'><asp:Literal ID="uiLtlAvgeSpeed" runat="server" /></td>
                                 <td class='alignright'><%# string.Format(@"{0:0}{1}{2:0}",Item.AvgeHeartRate, !string.IsNullOrEmpty(Item.AvgeHeartRate.ToString())?"/":"", Item.MaxHeartRate) %></td>
-                                <td class='alignright'><%# Item.ActivitiesThisMonth != 0 ? string.Format("{0:0}", Item.ActivitiesThisMonth) : string.Empty %> </td>
+                                <td class='alignright'><%# Item.ActivitiesThisMonth != 0 ? string.Format("{0:0}", Item.ActivitiesThisMonth) : string.Empty %><asp:Literal ID="uiLtlShowBikeIconForMTB" Visible="false" runat="server"><i class="fa fa-bicycle" aria-hidden="true"></i></asp:Literal></td>
                                 <td class='alignright'><%# Item.ActivitiesThisMonth != 0 ? string.Format("{0:0} ({1:0})", Item.TotalDistanceThisMonth/1000, Item.TotalDistanceThisMonth / 1000 * 0.6213712) : string.Empty %> </td>
                                 <td class='w-0'><%# ((DateTime)Item.StartDate).ToString("yyyyMMdd.0") %></td>
                             </tr>

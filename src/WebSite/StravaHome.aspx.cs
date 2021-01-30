@@ -277,6 +277,10 @@ public partial class StravaHome : System.Web.UI.Page
             bool activitiesForRoadie = uiDdlGearId.SelectedValue.ToLower()=="roadie";       // roadie is my first road bike, the one which was stolen
             bool activitiesForRoadie2 = uiDdlGearId.SelectedValue.ToLower() == "roadie2";   // roadie2 is the 2020 Giant Defy bought from PedalOn
             bool activitiesForGoodOlBoy = uiDdlGearId.SelectedValue.ToLower() == "mtb";     // mtb is my old mountain bike aka goodoldboy
+            bool activitiesIncludeGoodOlBoy = activitiesForGoodOlBoy || string.IsNullOrEmpty(uiDdlGearId.SelectedValue);
+
+            uiLtlShowMTBIcon.Visible = activitiesIncludeGoodOlBoy;
+
             if (activitiesForRoadie2)
             {
                 uiRptCycling.DataSource = result.Where(i => ActivityIsCycling(i) && GearIsRoadie2(i));
@@ -381,6 +385,15 @@ public partial class StravaHome : System.Web.UI.Page
                             "<a href='#demo" + gNoRides + "' data-toggle='collapse'><span class='fa fa-plus'></span></a>" + "<div id='demo" + gNoRides + "' class='collapse'>" + activity.Description + "</div>" : string.Empty;
 
                         uiLtlShowDescription.Text = linkToDescription;
+                    }
+
+                    if (GearIsGoodOlBoy(activity))
+                    {
+                        Literal uiLtlShowBikeIconForMTB = (Literal)e.Item.FindControl("uiLtlShowBikeIconForMTB");
+                        if (uiLtlShowBikeIconForMTB != null)
+                        {
+                            uiLtlShowBikeIconForMTB.Visible = true;
+                        }
                     }
                 }
             }
