@@ -43,6 +43,15 @@ public partial class StravaHome : System.Web.UI.Page
 
     private static readonly string State = new Random().Next(0, 100000).ToString("000000"); // CryptoRandom.CreateUniqueId();
 
+    public DateTime dtStartDate {
+        get
+        {
+            DateTime dtTime;
+            DateTime.TryParseExact(uiTxtStartDate.Text, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dtTime);
+            return dtTime;
+        }
+    }
+
     /// <summary>
     /// getting an access token from the strava api is a two step process
     /// 1) GetCodeButton_Click() gets a code for the required scope e.g. activity:read which then redirects back to this page with 'code' in the querystring
@@ -140,32 +149,38 @@ public partial class StravaHome : System.Web.UI.Page
             ApiClient.AccessToken = Token;
 
             DateTime fromDate, endDate;
+            bool fromDateIsValid = DateTime.TryParseExact(uiTxtStartDate.Text, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out fromDate);
+            bool endDateIsValid = DateTime.TryParseExact(uiTxtEndDate.Text, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out endDate);
 
-            if (DateTime.TryParseExact(uiTxtStartDate.Text, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out fromDate))
+            if (fromDateIsValid && endDateIsValid && fromDate <= DateTime.Today)
             {
-                if (DateTime.TryParseExact(uiTxtEndDate.Text, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out endDate))
+                endDate = endDate.AddDays(1);  //make sure we include today's activities 
+
+                int? epochFromDate = (int)((DateTimeOffset)fromDate).ToUnixTimeSeconds();
+                int? epochToDate = (int)((DateTimeOffset)endDate).ToUnixTimeSeconds();
+
+                var result = ActivitiesApiInstance.GetLoggedInAthleteActivities(epochToDate, epochFromDate, page: 1, perPage: 150);
+
+                UpdateWithActivityDetails(result);  // e.g. get calories 
+
+                CalculateActivitiesByMonth(result);
+                CalculateTopAverageSpeeds(result);
+                CalculateTopDistances(result);
+                CalculateTopAverageHR(result);
+                CalculateTop3MaximumHR(result);
+
+                RenderActivities(result, fromDate, endDate);
+            }
+            else
+            {
+                if (fromDate > DateTime.Today)
                 {
-                    endDate = endDate.AddDays(1);  //make sure we include today's activities 
-
-                    int? epochFromDate = (int)((DateTimeOffset)fromDate).ToUnixTimeSeconds();
-                    int? epochToDate = (int)((DateTimeOffset)endDate).ToUnixTimeSeconds();
-
-                    var result = ActivitiesApiInstance.GetLoggedInAthleteActivities(epochToDate, epochFromDate, page: 1, perPage: 150);
-
-                    UpdateWithActivityDetails(result);  // e.g. get calories 
-
-                    CalculateActivitiesByMonth(result);
-                    CalculateTopAverageSpeeds(result);
-                    CalculateTopDistances(result);
-                    CalculateTopAverageHR(result);
-                    CalculateTop3MaximumHR(result);
-
-                    RenderActivities(result, fromDate, endDate);
+                    Response.Write("<span class='error'>The start date cannot be after today - no rides have happend yet</span>");
                 }
-            }  else
-            {
-                // need some error handling for invalid dates
-                Response.Write("<span class='error'>Invalid date format - must be dd/MM/yyyy</span>");
+                else
+                {
+                    Response.Write("<span class='error'>Invalid date format - must be dd/MM/yyyy</span>");
+                }
             }
 
             ErrorLoopCount = 0;
