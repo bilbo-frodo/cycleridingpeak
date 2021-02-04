@@ -215,6 +215,7 @@ public partial class StravaHome : System.Web.UI.Page
             var activityDetails = GetActivityDetails(activity);
             activity.Calories = activityDetails.Calories;
             activity.Description = activityDetails.Description;
+            activity.AverageCadence = activityDetails.AverageCadence;
         }
     }
 

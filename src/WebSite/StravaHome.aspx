@@ -121,8 +121,9 @@
                                     <th class='w-84' id='column4'>elevation gain</th>
                                     <th class='w-72' id='column5'>calories</th>
                                     <th class='w-84' id='column6'>avge watts</th>
-                                    <th class='w-96' id='column7'>avge speed<br />km (miles)<br />per hr</th>
-                                    <th class='w-96' id='column8'>avge/max heart rate</th>
+                                    <th class='w-84' id='column7'>cadence</th>
+                                    <th class='w-96' id='column8'>avge speed<br />km (miles)<br />per hr</th>
+                                    <th class='w-96' id='column9'>avge/max heart rate</th>
                                     <th class='w-84'>rides this month</th>
                                     <th class='w-84'>distance this month</th>
                                     <th class='w-0'>date</th>
@@ -142,6 +143,7 @@
                                 <td class='alignright'><%# string.Format(@"{0:0}",Item.TotalElevationGain * 3.28084) %> ft</td>
                                 <td class='alignright'><%# string.Format(@"{0:0}",Item.Calories) %></td>
                                 <td class='alignright'><%# string.Format(@"{0:0}",Item.AverageWatts) %></td>
+                                <td class='alignright'><%# string.Format(@"{0:0}",Item.AverageCadence) %></td>
                                 <td class='alignright <%# Item.AverageSpeedPosition > 0 ? "highlighted" : "" %>'><asp:Literal ID="uiLtlAvgeSpeed" runat="server" /></td>
                                 <td class='alignright'><%# string.Format(@"{0:0}{1}{2:0}",Item.AvgeHeartRate, !string.IsNullOrEmpty(Item.AvgeHeartRate.ToString())?"/":"", Item.MaxHeartRate) %></td>
                                 <td class='alignright'><%# Item.ActivitiesThisMonth != 0 ? string.Format("{0:0}", Item.ActivitiesThisMonth) : string.Empty %><asp:Literal ID="uiLtlShowBikeIconForMTB" Visible="false" runat="server"><i class="fa fa-bicycle" aria-hidden="true"></i></asp:Literal></td>
@@ -385,7 +387,8 @@
                     $("#column6").click(function () { sortTable(6); });
                     $("#column7").click(function () { sortTable(7); });
                     $("#column8").click(function () { sortTable(8); });
-                    $("#column1").click(function () { sortTable(11); });  // sort on the hidden col at the far rhs
+                    $("#column8").click(function () { sortTable(9); });
+                    $("#column1").click(function () { sortTable(12); });  // sort on the hidden col at the far rhs
                 };
             return {
                 init: init,

@@ -297,6 +297,14 @@ namespace Strava.NET.Model {
     public float? AverageWatts { get; set; }
 
     /// <summary>
+    /// Average cadence in rpm during this activity. Rides only
+    /// </summary>
+    /// <value>Average cadence in rpm during this activity. Rides only</value>
+    [DataMember(Name = "average_cadence", EmitDefaultValue = false)]
+    [JsonProperty(PropertyName = "average_cadence")]
+    public float? AverageCadence { get; set; }
+
+    /// <summary>
     /// Whether the watts are from a power meter, false if estimated
     /// </summary>
     /// <value>Whether the watts are from a power meter, false if estimated</value>
