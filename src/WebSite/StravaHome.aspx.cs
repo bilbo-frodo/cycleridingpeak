@@ -175,7 +175,7 @@ public partial class StravaHome : System.Web.UI.Page
             {
                 if (fromDate > DateTime.Today)
                 {
-                    Response.Write("<span class='error'>The start date cannot be after today - no rides have happend yet</span>");
+                    Response.Write("<span class='error'>The start date cannot be after today - no rides have happened yet</span>");
                 }
                 else
                 {

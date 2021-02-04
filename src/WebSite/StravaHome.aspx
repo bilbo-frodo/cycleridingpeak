@@ -40,6 +40,8 @@
         .nav-link.right {position:absolute; right:0;}
         .btn-default {background-color: #fff; border-width:thin;}
         .fa {font-size:8px; color:gray;}
+        
+        #resultsTable th {cursor:pointer;}
 
     </style>
 </head>
