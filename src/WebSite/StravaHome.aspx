@@ -121,7 +121,7 @@
                                     <th class='w-84' id='column4'>elevation gain</th>
                                     <th class='w-72' id='column5'>calories</th>
                                     <th class='w-84' id='column6'>avge watts</th>
-                                    <th class='w-84' id='column7'>cadence</th>
+                                    <th class='w-84' id='column7'>avge cadence</th>
                                     <th class='w-96' id='column8'>avge speed<br />km (miles)<br />per hr</th>
                                     <th class='w-96' id='column9'>avge/max heart rate</th>
                                     <th class='w-84'>rides this month</th>

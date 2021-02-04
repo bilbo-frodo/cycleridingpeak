@@ -51,6 +51,22 @@ public partial class StravaHome : System.Web.UI.Page
             return dtTime;
         }
     }
+    /// <summary>
+    /// roadie is my first road bike, the one which was stolen
+    /// </summary>
+    protected bool SelectedBikeIsRoadie { get => uiDdlGearId.SelectedValue.ToLower() == "roadie"; set => SelectedBikeIsRoadie = value; }
+
+    /// <summary>
+    /// roadie2 is the 2020 Giant Defy bought from PedalOn
+    /// </summary>
+    protected bool SelectedBikeIsRoadie2 { get => uiDdlGearId.SelectedValue.ToLower() == "roadie2"; set => SelectedBikeIsRoadie2 = value; }
+
+    /// <summary>
+    /// mtb is my old mountain bike aka goodoldboy
+    /// </summary>
+    protected bool SelectedBikeIsMTB { get => uiDdlGearId.SelectedValue.ToLower() == "mtb"; set => SelectedBikeIsMTB = value; }
+
+    protected bool SelectedBikeIsAllBikes { get => string.IsNullOrEmpty(uiDdlGearId.SelectedValue); set => SelectedBikeIsAllBikes = value; }
 
     /// <summary>
     /// getting an access token from the strava api is a two step process
@@ -290,22 +306,17 @@ public partial class StravaHome : System.Web.UI.Page
 
         if (uiRbCycling.Checked)
         {
-            bool activitiesForRoadie = uiDdlGearId.SelectedValue.ToLower()=="roadie";       // roadie is my first road bike, the one which was stolen
-            bool activitiesForRoadie2 = uiDdlGearId.SelectedValue.ToLower() == "roadie2";   // roadie2 is the 2020 Giant Defy bought from PedalOn
-            bool activitiesForGoodOlBoy = uiDdlGearId.SelectedValue.ToLower() == "mtb";     // mtb is my old mountain bike aka goodoldboy
-            bool activitiesIncludeGoodOlBoy = activitiesForGoodOlBoy || string.IsNullOrEmpty(uiDdlGearId.SelectedValue);
+            uiLtlShowMTBIcon.Visible = SelectedBikeIsMTB || SelectedBikeIsAllBikes;
 
-            uiLtlShowMTBIcon.Visible = activitiesIncludeGoodOlBoy;
-
-            if (activitiesForRoadie2)
+            if (SelectedBikeIsRoadie2)
             {
                 uiRptCycling.DataSource = result.Where(i => ActivityIsCycling(i) && GearIsRoadie2(i));
             }
-            else if (activitiesForRoadie)
+            else if (SelectedBikeIsRoadie)
             {
                 uiRptCycling.DataSource = result.Where(i => ActivityIsCycling(i) && GearIsRoadie(i));
             }
-            else if (activitiesForGoodOlBoy)
+            else if (SelectedBikeIsMTB)
             {
                 uiRptCycling.DataSource = result.Where(i => ActivityIsCycling(i) && GearIsGoodOlBoy(i));
             }
@@ -647,7 +658,24 @@ public partial class StravaHome : System.Web.UI.Page
                         }
                         else
                         {
-                            activitiesThisMonth += 1;
+                            if (SelectedBikeIsRoadie2 && GearIsRoadie2(sortedEntry))
+                            {
+                                activitiesThisMonth += 1;
+                            }
+                            else if (SelectedBikeIsMTB && GearIsGoodOlBoy(sortedEntry))
+                            {
+                                activitiesThisMonth += 1;
+                            }
+                            else if (SelectedBikeIsRoadie && GearIsRoadie(sortedEntry))
+                            {
+                                activitiesThisMonth += 1;
+                            }
+                            else if (SelectedBikeIsAllBikes)
+                            {
+                                activitiesThisMonth += 1;
+                            }
+                            
+
                             totalDistanceThisMonth += sortedEntry.Distance;
                             previousActivityId = sortedEntry.Id; //when the month changes want to update running count on previous activity
                         }
