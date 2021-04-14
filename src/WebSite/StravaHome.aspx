@@ -27,6 +27,7 @@
         .w-64 {width:64px; text-align:right;}
         .w-0 {width:0; display:none;}
         .form-rounded {border-radius:4px; border-width:0px; padding: 2px;}
+        .centered {text-align:center;}
         .error {color:red;}
         .ui-datepicker table {
             width: 100%;
@@ -68,6 +69,10 @@
                     <label for="uiTxtEndDate">and</label>
                     <asp:TextBox ID="uiTxtEndDate" CssClass="form-rounded w-84" runat="server" />
                 </li>
+                <li class="nav-item nav-link">
+                    <label for="uiTxtKeywords">keywords:</label>
+                    <asp:TextBox ID="uiTxtKeywords" CssClass="form-rounded w-84 centered" runat="server" />
+                    </li>
                 <li class="nav-item nav-link"><asp:Literal ID="uiLtlStatus" runat="server"></asp:Literal></li>
             </ul>
         </nav>

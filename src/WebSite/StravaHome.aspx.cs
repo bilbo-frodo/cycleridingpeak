@@ -308,21 +308,23 @@ public partial class StravaHome : System.Web.UI.Page
         {
             uiLtlShowMTBIcon.Visible = SelectedBikeIsMTB || SelectedBikeIsAllBikes;
 
+            var filterResults = result.Where(i => ActivityIsCycling(i) && ActivityDescriptionContains(i, uiTxtKeywords.Text));
+
             if (SelectedBikeIsRoadie2)
             {
-                uiRptCycling.DataSource = result.Where(i => ActivityIsCycling(i) && GearIsRoadie2(i));
+                uiRptCycling.DataSource =  filterResults.Where(i => GearIsRoadie2(i));
             }
             else if (SelectedBikeIsRoadie)
             {
-                uiRptCycling.DataSource = result.Where(i => ActivityIsCycling(i) && GearIsRoadie(i));
+                uiRptCycling.DataSource = filterResults.Where(i => GearIsRoadie(i));
             }
             else if (SelectedBikeIsMTB)
             {
-                uiRptCycling.DataSource = result.Where(i => ActivityIsCycling(i) && GearIsGoodOlBoy(i));
+                uiRptCycling.DataSource = filterResults.Where(i => GearIsGoodOlBoy(i));
             }
             else
             {
-                uiRptCycling.DataSource = result.Where(i => ActivityIsCycling(i));
+                uiRptCycling.DataSource = filterResults;
             }
 
             uiRptCycling.DataBind();
@@ -813,6 +815,18 @@ public partial class StravaHome : System.Web.UI.Page
     private bool GearIsGoodOlBoy(SummaryActivity activity)
     {
         return (activity.GearId == GoodOlBoy);
+    }
+
+    private bool ActivityDescriptionContains(SummaryActivity activity, string searchString)
+    {
+        if (searchString.Trim().Length > 0)
+        {
+            return activity.Description.ToLower().Contains(searchString.ToLower()) || activity.Name.ToLower().Contains(searchString.ToLower());
+        }
+        else
+        {
+            return true;
+        }        
     }
 
     private string FormatTimeInUnixTimestampToHrsMins(float? totalTimeCycled)
