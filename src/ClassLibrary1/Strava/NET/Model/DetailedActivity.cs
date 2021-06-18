@@ -327,13 +327,18 @@ namespace Strava.NET.Model {
     [JsonProperty(PropertyName = "weighted_average_watts")]
     public int? WeightedAverageWatts { get; set; }
 
-        /// <summary>
-        /// The description of the activity - set EmitDefaultValue to true because some rides on Strava are returning null for 'description'
-        /// </summary>
-        /// <value>The description of the activity</value>
-        [DataMember(Name="description", EmitDefaultValue=true)]
+    /// <summary>
+    /// The description of the activity, check for nulls coming from Strava
+    /// </summary>
+    /// <value>The description of the activity</value>
+    private string _description;
+    [DataMember(Name="description", EmitDefaultValue=false)]
     [JsonProperty(PropertyName = "description")]
-    public string Description { get; set; }
+    public string Description
+    {
+            get { return _description ?? string.Empty; }
+            set { _description = value; }
+    }
 
     /// <summary>
     /// Gets or Sets Photos
