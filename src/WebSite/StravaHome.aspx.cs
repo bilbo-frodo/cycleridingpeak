@@ -34,6 +34,7 @@ public partial class StravaHome : System.Web.UI.Page
     float? gTotalTime = 0.0F;
 
     // Gear Id's as per Strava
+    protected const string Roadie3 = "b10050174";
     protected const string Roadie2 = "b7095592";
     protected const string Roadie = "b6051881";
     protected const string GoodOlBoy = "b6051885";
@@ -60,6 +61,11 @@ public partial class StravaHome : System.Web.UI.Page
     /// roadie2 is the 2020 Giant Defy bought from PedalOn
     /// </summary>
     protected bool SelectedBikeIsRoadie2 { get => uiDdlGearId.SelectedValue.ToLower() == "roadie2"; set => SelectedBikeIsRoadie2 = value; }
+
+    /// <summary>
+    /// roadie3 is the 2021 Giant Defy bought from PedalOn Nov 2021
+    /// </summary>
+    protected bool SelectedBikeIsRoadie3 { get => uiDdlGearId.SelectedValue.ToLower() == "roadie3"; set => SelectedBikeIsRoadie3 = value; }
 
     /// <summary>
     /// mtb is my old mountain bike aka goodoldboy
@@ -310,9 +316,13 @@ public partial class StravaHome : System.Web.UI.Page
 
             var filterResults = result.Where(i => ActivityIsCycling(i) && ActivityDescriptionContains(i, uiTxtKeywords.Text));
 
-            if (SelectedBikeIsRoadie2)
+            if (SelectedBikeIsRoadie3)
             {
-                uiRptCycling.DataSource =  filterResults.Where(i => GearIsRoadie2(i));
+                uiRptCycling.DataSource =  filterResults.Where(i => GearIsRoadie3(i));
+            }
+            else if (SelectedBikeIsRoadie2)
+            {
+                uiRptCycling.DataSource = filterResults.Where(i => GearIsRoadie2(i));
             }
             else if (SelectedBikeIsRoadie)
             {
@@ -660,7 +670,11 @@ public partial class StravaHome : System.Web.UI.Page
                         }
                         else
                         {
-                            if (SelectedBikeIsRoadie2 && GearIsRoadie2(sortedEntry))
+                            if (SelectedBikeIsRoadie3 && GearIsRoadie3(sortedEntry))
+                            {
+                                activitiesThisMonth += 1;
+                            }
+                            else if (SelectedBikeIsRoadie2 && GearIsRoadie2(sortedEntry))
                             {
                                 activitiesThisMonth += 1;
                             }
@@ -810,6 +824,11 @@ public partial class StravaHome : System.Web.UI.Page
     private bool GearIsRoadie2(SummaryActivity activity)
     {
         return (activity.GearId == Roadie2);
+    }
+
+    private bool GearIsRoadie3(SummaryActivity activity)
+    {
+        return (activity.GearId == Roadie3);
     }
 
     private bool GearIsGoodOlBoy(SummaryActivity activity)
