@@ -81,7 +81,7 @@
             <asp:RadioButton ID="uiRbCycling" Checked="true" Text="Cycling" GroupName="ActivityType" runat="server" />
                 </li>
             <li class="nav-link">
-            <asp:RadioButton ID="uiRbSpinning" Text="Spinning" GroupName="ActivityType" runat="server" />
+            <asp:RadioButton ID="uiRbSpinning" Text="Indoor" GroupName="ActivityType" runat="server" />
                 </li>
             <li class="nav-link">
             <asp:RadioButton ID="uiRbParkrun" Text="Park Run" GroupName="ActivityType" runat="server" Visible="false" />
