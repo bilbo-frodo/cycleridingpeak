@@ -472,6 +472,7 @@ public partial class StravaHome : System.Web.UI.Page
                 if (activity != null)
                 {
                     gTotalTime += activity.MovingTime;
+                    gTotalDistance += activity.Distance;
                 }
             }
             if (e.Item.ItemType == ListItemType.Footer)
@@ -480,6 +481,11 @@ public partial class StravaHome : System.Web.UI.Page
                 if (uiLtlNoRides != null)
                 {
                     uiLtlNoRides.Text = string.Format("{0:0}", gNoRides);
+                }
+                Literal uiLtlTotalDistance = (Literal)e.Item.FindControl("uiLtlTotalDistance");
+                if (uiLtlTotalDistance != null)
+                {
+                    uiLtlTotalDistance.Text = string.Format("{0:0} miles", gTotalDistance / 1000 * 0.6213712);
                 }
                 Literal uiLtlTotalTime = (Literal)e.Item.FindControl("uiLtlTotalTime");
                 if (uiLtlTotalTime != null)
@@ -651,7 +657,7 @@ public partial class StravaHome : System.Web.UI.Page
                 // only interested in cycle rides and spinning for now
                 if (((uiRbCycling.Checked) && (sortedEntry.Distance > 0) && (sortedEntry.Type.ToLower() == "ride") && (!ActivityIsWattbike(sortedEntry)))  // if distance > 0 it's road cycling 
                     ||
-                    (uiRbSpinning.Checked) && (sortedEntry.Distance == 0))
+                    (uiRbSpinning.Checked)) // wattbike has distance > 0
                 {
                     if (sortedEntry.StartDateLocal.HasValue)
                     {
