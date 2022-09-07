@@ -164,7 +164,9 @@
                                     <td></td>
                                     <td>No rides: <asp:Literal ID="uiLtlNoRides" runat="server"></asp:Literal></td>
                                     <td class='alignright'><asp:Literal ID="uiLtlTotalDistance" runat="server"></asp:Literal></td>
-                                    <td class='alignright'><asp:Literal ID="uiLtlTotalTime" runat="server"></asp:Literal></td></tr>
+                                    <td class='alignright'><asp:Literal ID="uiLtlTotalTime" runat="server"></asp:Literal></td>
+                                    <td class='alignright'><asp:Literal ID="uiLtlTotalAscent" runat="server"></asp:Literal></td>
+                                </tr>
                             </tfoot>
                         </table>
                     </FooterTemplate>

@@ -32,6 +32,7 @@ public partial class StravaHome : System.Web.UI.Page
     float? gTotalDistance = 0.0F;
     float? gTotalTimeCycled = 0.0F;
     float? gTotalTime = 0.0F;
+    float? gTotalAscent = 0.0F;
 
     // Gear Id's as per Strava
     protected const string Roadie3 = "b10050174";
@@ -400,6 +401,7 @@ public partial class StravaHome : System.Web.UI.Page
                 {
                     gTotalDistance += activity.Distance;
                     gTotalTime += activity.MovingTime;
+                    gTotalAscent += activity.TotalElevationGain * (float)3.28084;
 
                     float? speedConversion = 3.6F; //don't know what the units are for 'avge speed' returned by strava
                     var avgeSpeedInKmPerHr = activity.AverageSpeed * speedConversion;
@@ -452,6 +454,11 @@ public partial class StravaHome : System.Web.UI.Page
                 if (uiLtlTotalTime != null)
                 {
                     uiLtlTotalTime.Text = string.Format("{0:0}", FormatTimeInUnixTimestampToHrsMins(gTotalTime));
+                }
+                Literal uiLtlTotalAscent = (Literal)e.Item.FindControl("uiLtlTotalAscent");
+                if (uiLtlTotalAscent != null)
+                {
+                    uiLtlTotalAscent.Text = string.Format("{0:0}", gTotalAscent);
                 }
             }
         }
