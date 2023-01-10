@@ -97,17 +97,23 @@ public partial class StravaHome : System.Web.UI.Page
                 // set the default values
                 uiTxtStartDate.Text = string.Format("01/{0:00}/{1}", month, year);
                 uiTxtEndDate.Text = DateTime.Today.ToString("dd/MM/yyyy");
+                uiTxtStartDistance.Text = "1";
+                uiTxtEndDistance.Text = "100";
             }
             else  // we're returning from oAuth so check use any start/end date values in session
             {
                 uiTxtStartDate.Text=Session["StartDate"] != null? Session["StartDate"].ToString(): uiTxtStartDate.Text = string.Format("01/{0:00}/{1}", month, year);
                 uiTxtEndDate.Text = Session["EndDate"] != null? Session["EndDate"].ToString(): DateTime.Today.ToString("dd/MM/yyyy");
+                uiTxtStartDistance.Text = Session["StartDistance"] != null ? Session["StartDistance"].ToString() : "1";
+                uiTxtEndDistance.Text= Session["EndDistance"] != null ? Session["EndDistance"].ToString() : "100";
             }
         }
         else  // if it's a postback save the current values for start/end date - we could lose them if we need to oAuth authentice
         { 
             Session["StartDate"] = uiTxtStartDate.Text;
             Session["EndDate"] = uiTxtEndDate.Text;
+            Session["StartDistance"] = uiTxtStartDistance.Text;
+            Session["EndDistance"] = uiTxtEndDistance.Text;
         }
 
         // if 'code' is in the querystring then this has been returned by the strava authorize endpoint
@@ -172,15 +178,24 @@ public partial class StravaHome : System.Web.UI.Page
             ApiClient.AccessToken = Token;
 
             DateTime fromDate, endDate;
+            long fromMiles, toMiles;
             bool fromDateIsValid = DateTime.TryParseExact(uiTxtStartDate.Text, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out fromDate);
             bool endDateIsValid = DateTime.TryParseExact(uiTxtEndDate.Text, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out endDate);
+            bool fromMilesIsValid = Int64.TryParse(uiTxtStartDistance.Text, out fromMiles);
+            bool toMilesIsValid=Int64.TryParse(uiTxtEndDistance.Text, out toMiles);
 
-            if (fromDateIsValid && endDateIsValid && fromDate <= DateTime.Today)
+            if (fromDateIsValid && endDateIsValid && fromDate <= DateTime.Today && fromMilesIsValid && toMilesIsValid && toMiles>=fromMiles)
             {
                 endDate = endDate.AddDays(1);  //make sure we include today's activities 
 
                 int? epochFromDate = (int)((DateTimeOffset)fromDate).ToUnixTimeSeconds();
                 int? epochToDate = (int)((DateTimeOffset)endDate).ToUnixTimeSeconds();
+
+                double milesToKilometersConversionRate = 1.609344;
+                double roundFromMiles = Math.Round(Convert.ToDouble(fromMiles) * milesToKilometersConversionRate * 1000.0, 0);
+                double roundToMiles = Math.Round(Convert.ToDouble(toMiles) * milesToKilometersConversionRate * 1000.0, 0);
+                long fromMilesInMeters = Convert.ToInt64(roundFromMiles);
+                long toMilesInMeters = Convert.ToInt64(roundToMiles);
 
                 var result = ActivitiesApiInstance.GetLoggedInAthleteActivities(epochToDate, epochFromDate, page: 1, perPage: 150);
 
@@ -192,7 +207,7 @@ public partial class StravaHome : System.Web.UI.Page
                 CalculateTopAverageHR(result);
                 CalculateTop3MaximumHR(result);
 
-                RenderActivities(result, fromDate, endDate);
+                RenderActivities(result, fromDate, endDate, fromMilesInMeters, toMilesInMeters);
             }
             else
             {
@@ -301,7 +316,7 @@ public partial class StravaHome : System.Web.UI.Page
         authorizeApi.GetCode(ClientId, ClientSecret, Scope, redirectUri, State);
     }
 
-    private void RenderActivities(System.Collections.Generic.List<SummaryActivity> result, DateTime fromDate, DateTime endDate)
+    private void RenderActivities(System.Collections.Generic.List<SummaryActivity> result, DateTime fromDate, DateTime endDate, long fromDistance, long toDistance)
     {
 
         //float? totalDistance = 0.0F;
@@ -316,6 +331,7 @@ public partial class StravaHome : System.Web.UI.Page
             uiLtlShowMTBIcon.Visible = SelectedBikeIsMTB || SelectedBikeIsAllBikes;
 
             var filterResults = result.Where(i => ActivityIsCycling(i) && ActivityDescriptionContains(i, uiTxtKeywords.Text));
+            filterResults = filterResults.Where(i => i.Distance >= fromDistance && i.Distance <= toDistance);
 
             if (SelectedBikeIsRoadie3)
             {

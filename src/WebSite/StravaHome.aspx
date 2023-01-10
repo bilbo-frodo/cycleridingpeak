@@ -25,6 +25,9 @@
         .w-84 {width:84px; text-align:right;}
         .w-72 {width:72px; text-align:right;}
         .w-64 {width:64px; text-align:right;}
+        .w-56 {width:56px; text-align:right;}
+        .w-48 {width:48px; text-align:right;}
+        .w-40 {width:40px; text-align:right;}
         .w-0 {width:0; display:none;}
         .form-rounded {border-radius:4px; border-width:0px; padding: 2px;}
         .centered {text-align:center;}
@@ -63,16 +66,20 @@
                 </li>
                 <li class="nav-item nav-link">
                     <label for="uiTxtStartDate">Between:</label>
-                    <asp:TextBox ID="uiTxtStartDate" CssClass="form-rounded w-84" runat="server" />
-                </li>
-                <li class="nav-item nav-link">
+                    <asp:TextBox ID="uiTxtStartDate" CssClass="form-rounded w-72" runat="server" />
                     <label for="uiTxtEndDate">and</label>
-                    <asp:TextBox ID="uiTxtEndDate" CssClass="form-rounded w-84" runat="server" />
+                    <asp:TextBox ID="uiTxtEndDate" CssClass="form-rounded w-72" runat="server" />
                 </li>
                 <li class="nav-item nav-link">
                     <label for="uiTxtKeywords">keywords:</label>
                     <asp:TextBox ID="uiTxtKeywords" CssClass="form-rounded w-84 centered" runat="server" />
-                    </li>
+                </li>
+                <li class="nav-item nav-link">
+                    <label for="uiTxtStartDistance">From:</label>
+                    <asp:TextBox ID="uiTxtStartDistance" CssClass="form-rounded w-40" runat="server" />
+                    <label for="uiTxtEndDistance">to</label>
+                    <asp:TextBox ID="uiTxtEndDistance" CssClass="form-rounded w-40" runat="server" />miles
+                </li>
                 <li class="nav-item nav-link"><asp:Literal ID="uiLtlStatus" runat="server"></asp:Literal></li>
             </ul>
         </nav>
