@@ -146,7 +146,7 @@
                     </HeaderTemplate>
                     <ItemTemplate>                    
                             <tr>
-                                <td><%# ((DateTime)Item.StartDate).ToString("ddd dd MMM") %></td>
+                                <td><%# ((DateTime)Item.StartDate).ToString("ddd dd MMM yy") %></td>
                                 <td>
                                     <a class="linkBlack" href="https://www.strava.com/activities/<%#Item.Id %>" target="_blank"><%# Item.Name %></a> 
                                     <asp:Literal ID="uiLtlShowDescription" runat="server"></asp:Literal>
