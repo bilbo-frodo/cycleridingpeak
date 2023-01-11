@@ -33,6 +33,8 @@ public partial class StravaHome : System.Web.UI.Page
     float? gTotalTimeCycled = 0.0F;
     float? gTotalTime = 0.0F;
     float? gTotalAscent = 0.0F;
+    private int gMaxNoRides = 150;
+    private bool gMaxNoRidesReached = false;
 
     // Gear Id's as per Strava
     protected const string Roadie3 = "b10050174";
@@ -197,7 +199,12 @@ public partial class StravaHome : System.Web.UI.Page
                 long fromMilesInMeters = Convert.ToInt64(roundFromMiles);
                 long toMilesInMeters = Convert.ToInt64(roundToMiles);
 
-                var result = ActivitiesApiInstance.GetLoggedInAthleteActivities(epochToDate, epochFromDate, page: 1, perPage: 150);
+                //get activities and set flag if max no of activities have been returned (looks like strava has a limit of about 150 recs per call)
+                var result = ActivitiesApiInstance.GetLoggedInAthleteActivities(epochToDate, epochFromDate, page: 1, perPage: gMaxNoRides);
+                if (result.Count == gMaxNoRides)
+                {
+                    gMaxNoRidesReached = true;
+                }
 
                 UpdateWithActivityDetails(result);  // e.g. get calories 
 
@@ -399,6 +406,10 @@ public partial class StravaHome : System.Web.UI.Page
             uiLtlSummary.Text = "<p>";
             uiLtlSummary.Text += (string.Format(@"Total distance on bike since {0:dd/MM/yyyy} is {1:0} km or {2:0} miles<br />", fromDate, gTotalDistance / 1000, gTotalDistance / 1000 * 0.6213712));
             uiLtlSummary.Text += (string.Format(@"Total time spinning was {0}:{1:00} hrs:mins<br />", hoursCycled, tsTimeCycled.Minutes));
+            if (gMaxNoRidesReached)
+            {
+                uiLtlSummary.Text += (string.Format(@"The max no of rides ({0}) has been returned.  There may be other rides which are not showing", gMaxNoRides));
+            }
             uiLtlSummary.Text += "</p>";
         }
     }
