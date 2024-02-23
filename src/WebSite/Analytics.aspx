@@ -18,6 +18,7 @@
         .w-40 {width:40px; text-align:right;}
         .w-0 {width:0; display:none;}
         .form-rounded {border-radius:4px; border-width:1px; padding: 2px;}
+        .position-right {position:absolute;right:100px;border:solid 1px; padding:10px;}
     </style>
 </head>
 <body>
@@ -26,7 +27,28 @@
             <p>
                 Data file:
                 <asp:TextBox ID="uiDataFile"  CssClass="form-rounded w-300" runat="server" />
+                Data for Year:
+                <asp:DropDownList ID="uiDdlYear" CssClass="form-rounded w-56" runat="server">
+                    <asp:ListItem Text="2023"></asp:ListItem>
+                    <asp:ListItem Text="2024"></asp:ListItem>
+                    <asp:ListItem Text="2025"></asp:ListItem>
+                </asp:DropDownList>
             </p>
+            <div class="position-right">
+                <h3>Parameters</h3>
+                <p>Show Consecutive Dates
+                <asp:CheckBox ID="uiChkShowDates" CssClass="form-rounded w-40" runat="server" />
+                </p>
+                <p>
+                Show Specific Hits
+                <asp:CheckBox ID="uiChkShowSpecificData" CssClass="form-rounded w-40" runat="server" />
+                </p>
+                <p>
+                    Change Date Format
+                    <asp:CheckBox ID="uiChkChangeDateFormat" CssClass="form-rounded w-40" runat="server" />
+                </p>
+            </div>
+            
         </div>
         <div>
             Enter search text:
