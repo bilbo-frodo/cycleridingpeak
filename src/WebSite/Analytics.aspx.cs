@@ -20,7 +20,7 @@ public partial class Analytics : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         // Specify the path to the text file
-        filePath = "C:/BillShortcuts/Health/Health Data/Data2024.txt";
+        filePath = "C:/BillShortcuts/Health/Health Data/Data" + DateTime.Now.Year.ToString() + ".txt";
         if (!IsPostBack)
         {
             uiDataFile.Text = filePath;
